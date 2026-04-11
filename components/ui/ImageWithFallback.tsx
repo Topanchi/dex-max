@@ -10,6 +10,7 @@ interface ImageWithFallbackProps {
   height: number;
   className?: string;
   priority?: boolean;
+  unoptimized?: boolean;
 }
 
 export function ImageWithFallback({
@@ -19,6 +20,7 @@ export function ImageWithFallback({
   height,
   className = '',
   priority = false,
+  unoptimized,
 }: ImageWithFallbackProps) {
   const [error, setError] = useState(false);
 
@@ -57,7 +59,7 @@ export function ImageWithFallback({
       className={className}
       priority={priority}
       onError={() => setError(true)}
-      unoptimized={src.startsWith('https://raw.githubusercontent.com')}
+      unoptimized={unoptimized ?? src.startsWith('https://raw.githubusercontent.com')}
     />
   );
 }
