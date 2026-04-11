@@ -432,11 +432,11 @@ async function fetchVariants(raw: RawPokemon): Promise<PokemonVariant[]> {
 
   // Deduplicate by id
   const seen = new Set<number>();
-  return results.filter((v): v is PokemonVariant => {
+  return results.filter(v => {
     if (!v || seen.has(v.id)) return false;
     seen.add(v.id);
     return true;
-  });
+  }) as PokemonVariant[];
 }
 
 export async function fetchPokemonDetail(
