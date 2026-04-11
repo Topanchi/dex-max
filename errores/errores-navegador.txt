@@ -1,0 +1,46 @@
+Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+      <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+        <LoadingBoundary loading={[...]}>
+          <Suspense fallback={<Fragment>}>
+            <HTTPAccessFallbackBoundary notFound={[...]} forbidden={undefined} unauthorized={undefined}>
+              <HTTPAccessFallbackErrorBoundary pathname="/" notFound={[...]} forbidden={undefined} ...>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <InnerLayoutRouter parallelRouterKey="children" url="/" tree={[...]} childNodes={Map} ...>
+                      <Home>
+                        <div>
+                          <div>
+                          <PokedexClient initialPage={{pokemon:[...], ...}}>
+                            <div>
+                              <div>
+                              <TypeFilter>
+                              <p className="text-xs text-slate-500 mb-4">
++                               1350 Pokémon
+-                               1,350 Pokémon
+                              ...
+                      ...
+
+    at throwOnHydrationMismatch (react-dom-client.development.js:4129:11)
+    at prepareToHydrateHostInstance (react-dom-client.development.js:4225:21)
+    at completeWork (react-dom-client.development.js:13696:15)
+    at runWithFiberInDEV (react-dom-client.development.js:544:16)
+    at completeUnitOfWork (react-dom-client.development.js:15200:19)
+    at performUnitOfWork (react-dom-client.development.js:15081:11)
+    at workLoopConcurrent (react-dom-client.development.js:15058:9)
+    at renderRootConcurrent (react-dom-client.development.js:15033:15)
+    at performWorkOnRoot (react-dom-client.development.js:14350:13)
+    at performWorkOnRootViaSchedulerTask (react-dom-client.development.js:15955:7)
+    at MessagePort.performWorkUntilDeadline (scheduler.development.js:44:48)
