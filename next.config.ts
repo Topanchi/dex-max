@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
-        pathname: '/flibustier/pokemon-tcg-pocket-database/**',
+        pathname: '/chase-manning/pokemon-tcg-pocket-cards/**',
       },
       {
         protocol: 'https',
