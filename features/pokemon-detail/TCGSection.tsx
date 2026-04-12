@@ -168,9 +168,13 @@ export function TCGSection({ pokemonName }: TCGSectionProps) {
       )}
 
       {!loading && !error && cards.length === 0 && (
-        <p className="text-slate-500 text-sm py-4">
-          No se encontraron cartas TCG para este Pokémon.
-        </p>
+        <div className="flex flex-col items-center gap-2 py-8 text-center
+                        bg-[#1a1a2e] rounded-xl border border-[#2a2a4e]">
+          <span className="text-2xl" aria-hidden="true">🃏</span>
+          <p className="text-slate-400 text-sm font-medium">
+            Este Pokémon no posee cartas asociadas al TCG.
+          </p>
+        </div>
       )}
 
       {!loading && cards.length > 0 && (

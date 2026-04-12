@@ -18,12 +18,25 @@ import {
 import { getTypeGradient } from '@/utils/typeColors';
 import type { PokemonDetail } from '@/types/pokemon';
 
+const EEVEE_FAMILY = new Set([
+  133, // Eevee
+  134, // Vaporeon
+  135, // Jolteon
+  136, // Flareon
+  197, // Espeon
+  198, // Umbreon
+  470, // Leafeon
+  471, // Glaceon
+  700, // Sylveon
+]);
+
 interface Props {
   pokemon: PokemonDetail;
 }
 
 export function PokemonDetailView({ pokemon }: Props) {
   const [spriteGallery, setSpriteGallery] = useState(false);
+  const isEeveeFamily = EEVEE_FAMILY.has(pokemon.id);
 
   const displayName = normalizePokemonName(pokemon.name);
   const number = formatPokedexNumber(pokemon.id);
@@ -177,27 +190,53 @@ export function PokemonDetailView({ pokemon }: Props) {
         </div>
       </div>
 
-      {/* ─── Stats + Evolution chain + Forms (side by side on md+) ─────────── */}
-      <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-start">
-        <div className="bg-[#1a1a2e] rounded-xl sm:rounded-2xl border border-[#2a2a4e] p-4 sm:p-6 shrink-0 w-full md:w-[320px] lg:w-[380px]">
-          <BaseStats stats={pokemon.stats} />
-        </div>
-
-        {(pokemon.evolutionChain || pokemon.variants.length > 0) && (
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:gap-6 items-start min-w-0 flex-1">
+      {/* ─── Stats + Evolution chain + Forms (gridded layout) ─────────────────── */}
+      {(pokemon.evolutionChain || pokemon.variants.length > 0) && (
+        isEeveeFamily ? (
+          // Eevee family: cadena evolutiva a ancho completo, luego Stats + Formas en 2 columnas
+          <div className="space-y-4 sm:space-y-6">
             {pokemon.evolutionChain && (
-              <div className="shrink-0">
+              <div className="py-2">
+                <EvolutionChainView chain={pokemon.evolutionChain} currentId={pokemon.id} layout="tree" />
+              </div>
+            )}
+            <div className={`grid grid-cols-1 gap-4 sm:gap-6 ${pokemon.variants.length > 0 ? 'md:grid-cols-2' : ''}`}>
+              <div className="bg-[#1a1a2e] rounded-xl sm:rounded-2xl border border-[#2a2a4e] p-4 sm:p-6">
+                <BaseStats stats={pokemon.stats} />
+              </div>
+              {pokemon.variants.length > 0 && (
+                <div className="bg-[#1a1a2e] rounded-xl sm:rounded-2xl border border-[#2a2a4e] p-4 sm:p-6">
+                  <FormsSection variants={pokemon.variants} />
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          // Resto: Stats | Cadena evolutiva | Formas en la misma grilla
+          // Formas recibe el doble de ancho (2fr) para que las tarjetas Mega quepan sin colapsar.
+          // En tablet (md) ocupa las 2 columnas completas; a partir de lg tiene su propio carril 2fr.
+          <div className={`grid grid-cols-1 gap-4 sm:gap-6 ${
+            pokemon.evolutionChain && pokemon.variants.length > 0
+              ? 'md:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr]'
+              : 'md:grid-cols-2'
+          }`}>
+            <div className="bg-[#1a1a2e] rounded-xl sm:rounded-2xl border border-[#2a2a4e] p-4 sm:p-6">
+              <BaseStats stats={pokemon.stats} />
+            </div>
+            {pokemon.evolutionChain && (
+              <div className="py-2">
                 <EvolutionChainView chain={pokemon.evolutionChain} currentId={pokemon.id} />
               </div>
             )}
             {pokemon.variants.length > 0 && (
-              <div className="flex-1 min-w-0">
+              <div className="bg-[#1a1a2e] rounded-xl sm:rounded-2xl border border-[#2a2a4e] p-4 sm:p-6
+                              md:col-span-2 lg:col-span-1">
                 <FormsSection variants={pokemon.variants} />
               </div>
             )}
           </div>
-        )}
-      </div>
+        )
+      )}
 
       {/* ─── Sprite gallery ───────────────────────────────────────────────── */}
       {hasSpriteGallery && (
