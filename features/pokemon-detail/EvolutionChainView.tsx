@@ -36,6 +36,45 @@ function Arrow({ triggers }: { triggers: EvolutionTrigger[] }) {
   );
 }
 
+/** Vertical down arrow for tree layout */
+function DownArrow() {
+  return (
+    <div className="flex justify-center py-1">
+      <svg
+        className="w-6 h-6 text-slate-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  );
+}
+
+/** Tree layout: root centered on top, all direct children in a row below */
+function TreeLayout({ root, currentId }: { root: EvolutionNode; currentId: number }) {
+  return (
+    <div className="flex flex-col items-center gap-1 w-full">
+      <NodeCard node={root} currentId={currentId} />
+      <DownArrow />
+      <div className="flex flex-wrap justify-center gap-3">
+        {root.evolvesTo.map(child => (
+          <div key={child.id} className="flex flex-col items-center gap-1">
+            {getTriggerLabel(child.evolutionDetails) && (
+              <span className="text-[10px] text-slate-500 text-center leading-tight capitalize max-w-[90px]">
+                {getTriggerLabel(child.evolutionDetails)}
+              </span>
+            )}
+            <NodeCard node={child} currentId={currentId} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** Single Pokémon node card */
 function NodeCard({ node, currentId }: { node: EvolutionNode; currentId: number }) {
   const isCurrent = node.id === currentId;
@@ -122,19 +161,24 @@ function ChainNode({
 interface EvolutionChainViewProps {
   chain: EvolutionNode;
   currentId: number;
+  layout?: 'horizontal' | 'tree';
 }
 
-export function EvolutionChainView({ chain, currentId }: EvolutionChainViewProps) {
+export function EvolutionChainView({ chain, currentId, layout = 'horizontal' }: EvolutionChainViewProps) {
   if (chain.evolvesTo.length === 0) return null;
 
   return (
     <section aria-label="Cadena evolutiva">
       <h2 className="text-lg font-bold mb-4 text-white">Cadena evolutiva</h2>
-      <div className="bg-[#1a1a2e] rounded-2xl border border-[#2a2a4e] p-3 sm:p-4 overflow-x-auto w-fit max-w-full">
-        <div className="flex items-center min-w-max">
-          <ChainNode node={chain} currentId={currentId} triggers={[]} />
+      {layout === 'tree' ? (
+        <TreeLayout root={chain} currentId={currentId} />
+      ) : (
+        <div className="bg-[#1a1a2e] rounded-2xl border border-[#2a2a4e] p-3 sm:p-4 overflow-x-auto w-fit max-w-full">
+          <div className="flex items-center min-w-max">
+            <ChainNode node={chain} currentId={currentId} triggers={[]} />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

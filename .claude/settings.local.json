@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:tcgdex.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -I https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -s https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/cards.extra.json)",
+      "Bash(python3 -c \"import json, sys; data = json.load\\(sys.stdin\\); [print\\(f'{i+1}. {card.get\\(\\\\\"name\\\\\", \\\\\"N/A\\\\\"\\)}: image = {card.get\\(\\\\\"image\\\\\", \\\\\"N/A\\\\\"\\)}'\\) for i, card in enumerate\\(data[:5]\\)]\")",
+      "Bash(curl -s https://api.github.com/repos/flibustier/pokemon-tcg-pocket-database/contents/dist/images?ref=main)",
+      "Bash(curl -I https://github.com/flibustier/pokemon-tcg-pocket-database/raw/main/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -s https://api.github.com/repos/flibustier/pokemon-tcg-pocket-database/releases/latest)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -I https://raw.githubusercontent.com/flibustier/pokemon-tcg-exchange/main/public/images/cards/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -I https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-pocket-database@latest/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -I https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-exchange@main/public/images/cards/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl:*)"
+    ]
+  }
+}
