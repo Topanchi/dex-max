@@ -46,3 +46,7 @@ next-env.d.ts
 .turbo/
 .vercel/
 .eslintcache
+
+# ─── Personal ──────────────────────────────────────────────────────────────────
+errores/
+.claude/
