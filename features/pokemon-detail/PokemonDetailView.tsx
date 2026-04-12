@@ -9,6 +9,7 @@ import { BaseStats } from './BaseStats';
 import { EvolutionChainView } from './EvolutionChainView';
 import { FormsSection } from './FormsSection';
 import { TCGSection } from './TCGSection';
+import { TCGPocketSection } from './TCGPocketSection';
 import {
   normalizePokemonName,
   formatPokedexNumber,
@@ -302,6 +303,9 @@ export function PokemonDetailView({ pokemon }: Props) {
 
       {/* ─── TCG cards ────────────────────────────────────────────────────── */}
       <TCGSection pokemonName={pokemon.name} />
+
+      {/* ─── TCG Pocket cards ─────────────────────────────────────────────── */}
+      <TCGPocketSection pokemonName={pokemon.name} />
     </div>
   );
 }

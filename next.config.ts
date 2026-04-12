@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/flibustier/pokemon-tcg-pocket-database/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'assets.tcgdex.net',
       },
       {

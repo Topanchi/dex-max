@@ -50,6 +50,19 @@ export interface TCGdexCardDetail {
 
 // ─── Application TCG types ────────────────────────────────────────────────────
 
+export interface TCGPocketCard {
+  id: string;
+  name: string;
+  localId: string | number;
+  imageUrl: string | null;
+  rarity: string | null;
+  category: string;
+  set: { id: string; name: string };
+  types?: string[];
+  hp?: number;
+  illustrator?: string;
+}
+
 export interface TCGCard {
   id: string;
   name: string;
