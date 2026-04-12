@@ -92,22 +92,32 @@ function CardModalContent({ card }: { card: TCGPocketCard }) {
               <dd className="text-white">{card.rarity}</dd>
             </div>
           )}
-          <div className="flex gap-2">
-            <dt className="text-slate-500 w-24 shrink-0">Categoría</dt>
-            <dd className="text-white capitalize">{card.category}</dd>
-          </div>
+          {card.type && (
+            <div className="flex gap-2">
+              <dt className="text-slate-500 w-24 shrink-0">Tipo</dt>
+              <dd className="text-white">{card.type}</dd>
+            </div>
+          )}
           {card.hp && (
             <div className="flex gap-2">
               <dt className="text-slate-500 w-24 shrink-0">PS</dt>
               <dd className="text-white">{card.hp}</dd>
             </div>
           )}
-          {card.types && card.types.length > 0 && (
+          {card.pack && (
             <div className="flex gap-2">
-              <dt className="text-slate-500 w-24 shrink-0">Tipo (TCG)</dt>
-              <dd className="text-white capitalize">{card.types.join(', ')}</dd>
+              <dt className="text-slate-500 w-24 shrink-0">Sobre</dt>
+              <dd className="text-white">{card.pack}</dd>
             </div>
           )}
+          <div className="flex gap-2">
+            <dt className="text-slate-500 w-24 shrink-0">Variantes</dt>
+            <dd className="flex gap-2">
+              {card.isEx   && <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-500/20 text-yellow-300">ex</span>}
+              {card.fullArt && <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300">Full Art</span>}
+              {!card.isEx && !card.fullArt && <span className="text-slate-500">—</span>}
+            </dd>
+          </div>
           {card.illustrator && (
             <div className="flex gap-2">
               <dt className="text-slate-500 w-24 shrink-0">Ilustrador</dt>
@@ -178,7 +188,7 @@ export function TCGPocketSection({ pokemonName }: TCGPocketSectionProps) {
       {!loading && cards.length > 0 && (
         <>
           <p className="text-xs text-slate-500 mb-3">
-            {cards.length} carta{cards.length !== 1 ? 's' : ''} · Fuente: pokemon-tcg-pocket-database
+            {cards.length} carta{cards.length !== 1 ? 's' : ''} · Fuente: pokemon-tcg-pocket-cards
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-9 gap-3">
             {cards.map(card => (
