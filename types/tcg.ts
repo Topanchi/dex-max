@@ -53,14 +53,16 @@ export interface TCGdexCardDetail {
 export interface TCGPocketCard {
   id: string;
   name: string;
-  localId: string | number;
-  imageUrl: string | null;
+  localId: string;
+  imageUrl: string;
   rarity: string | null;
-  category: string;
   set: { id: string; name: string };
-  types?: string[];
-  hp?: number;
-  illustrator?: string;
+  pack: string | null;
+  type: string | null;
+  hp: number | null;
+  illustrator: string | null;
+  fullArt: boolean;
+  isEx: boolean;
 }
 
 export interface TCGCard {

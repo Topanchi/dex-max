@@ -1,108 +1,102 @@
 /**
  * TCG Pocket cards service — usa el repositorio público:
- * https://github.com/flibustier/pokemon-tcg-pocket-database
+ * https://github.com/chase-manning/pokemon-tcg-pocket-cards
  *
  * Estrategia:
- *   1. Carga cards.extra.json (todos los sets, un solo fetch, cacheado 24 h)
- *   2. Carga sets.json para obtener los nombres de los sets
- *   3. Filtra las cartas por nombre con el mismo guard que el TCG clásico
- *      (evita que "Mew" coincida con "Mewtwo")
+ *   1. Carga v4.json (todas las cartas, URLs de imagen directas, cacheado 24 h)
+ *   2. Carga expansions.json para obtener los nombres de los sets
+ *   3. Filtra las cartas por nombre con el guard anti-Mewtwo
  */
 
 import { fetcherSafe } from '@/lib/fetcher';
 import type { TCGPocketCard } from '@/types/tcg';
 
-const RAW_BASE  = 'https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist';
+const RAW_BASE   = 'https://raw.githubusercontent.com/chase-manning/pokemon-tcg-pocket-cards/refs/heads/main';
 const REVALIDATE = 86400; // 24 h
-
-/** Constructs the card image URL using TCGdex's asset CDN. */
-function buildImageUrl(set: string, number: number): string {
-  const padded = String(number).padStart(3, '0');
-  return `https://assets.tcgdex.net/en/tcgp/${set}/${padded}/high.webp`;
-}
 
 // ─── Raw types ────────────────────────────────────────────────────────────────
 
-interface PocketCardRaw {
-  set: string;
-  number: number;
-  rarity: string;
-  name: string;
-  image: string;
-  packs: string[];
-  element?: string;
-  type?: string;
-  stage?: string | number;
-  health?: number;
-  retreatCost?: number;
-  weakness?: string;
-  evolvesFrom?: string;
+interface RawCard {
+  id: string;          // "a1-001"
+  name: string;        // "Bulbasaur" | "Venusaur ex"
+  rarity: string;      // "◊", "◊◊", "◊◊◊", "◊◊◊◊"
+  pack: string;        // "Mewtwo", "Pikachu", "Charizard"
+  health: string;      // "70" (string)
+  image: string;       // full HTTPS URL
+  fullart: 'Yes' | 'No';
+  ex: 'Yes' | 'No';
+  artist: string;
+  type: string;        // "Grass", "Fire", "Water", …
 }
 
-interface PocketSetRaw {
-  code: string;
-  releaseDate: string;
-  count: number;
-  name: { en: string; [lang: string]: string };
-  packs: string[];
-}
-
-// sets.json is keyed by generation ("A", "B", …), each value is an array of sets
-type SetsJson = Record<string, PocketSetRaw[]>;
-
-// ─── Name matching ────────────────────────────────────────────────────────────
-
-function isNameMatch(cardName: string, searchName: string): boolean {
-  const card   = cardName.toLowerCase();
-  const search = searchName.toLowerCase();
-  if (card === search) return true;
-  if (!card.startsWith(search)) return false;
-  const nextChar = card[search.length];
-  return nextChar !== undefined && !/[a-záéíóúüñ]/i.test(nextChar);
+interface RawExpansion {
+  id: string;          // "a1", "a1a", "promo-a"
+  name: string;        // "Genetic Apex"
+  packs: { id: string; name: string; image: string }[];
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Builds a map of set code → English name from the sets.json response. */
-function buildSetMap(setsJson: SetsJson): Map<string, string> {
-  const map = new Map<string, string>();
-  for (const sets of Object.values(setsJson)) {
-    for (const s of sets) {
-      map.set(s.code, s.name.en ?? s.code);
-    }
+/** "a1-001" → "a1" | "promo-a-001" → "promo-a" */
+function getExpansionId(cardId: string): string {
+  return cardId.replace(/-\d+$/, '');
+}
+
+/**
+ * Acepta una carta si el nombre del Pokémon buscado aparece como palabra completa
+ * en cualquier posición del nombre de la carta.
+ *
+ * - "Charizard"         ✓ búsqueda "Charizard"
+ * - "Charizard ex"      ✓ búsqueda "Charizard"
+ * - "Mega Charizard X ex" ✓ búsqueda "Charizard"
+ * - "Mewtwo"            ✗ búsqueda "Mew"  (la 't' que sigue es letra)
+ */
+function isNameMatch(cardName: string, searchName: string): boolean {
+  const card   = cardName.toLowerCase();
+  const search = searchName.toLowerCase();
+
+  let idx = 0;
+  while ((idx = card.indexOf(search, idx)) !== -1) {
+    const prevChar = idx > 0 ? card[idx - 1] : ' ';
+    const nextChar = card[idx + search.length];
+    const validBefore = !/[a-záéíóúüñ]/i.test(prevChar);
+    const validAfter  = nextChar === undefined || !/[a-záéíóúüñ]/i.test(nextChar);
+    if (validBefore && validAfter) return true;
+    idx++;
   }
-  return map;
+  return false;
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-/**
- * Returns all TCG Pocket cards for the given Pokémon display name
- * (e.g. "Pikachu", "Mr. Mime").
- */
 export async function searchTCGPocketCards(pokemonName: string): Promise<TCGPocketCard[]> {
-  // Fetch data in parallel — both responses are cached for 24 h
-  const [cards, setsJson] = await Promise.all([
-    fetcherSafe<PocketCardRaw[]>(`${RAW_BASE}/cards.extra.json`, { revalidate: REVALIDATE }),
-    fetcherSafe<SetsJson>(`${RAW_BASE}/sets.json`,               { revalidate: REVALIDATE }),
+  const [cards, expansions] = await Promise.all([
+    fetcherSafe<RawCard[]>(`${RAW_BASE}/v4.json`,         { revalidate: REVALIDATE }),
+    fetcherSafe<RawExpansion[]>(`${RAW_BASE}/expansions.json`, { revalidate: REVALIDATE }),
   ]);
 
-  if (!cards?.length || !setsJson) return [];
+  if (!cards?.length || !expansions?.length) return [];
 
-  const setNames = buildSetMap(setsJson);
+  const setMap = new Map(expansions.map(e => [e.id, e.name]));
 
   return cards
     .filter(c => isNameMatch(c.name, pokemonName))
-    .map(c => ({
-      id:          `${c.set}-${c.number}`,
-      name:        c.name,
-      localId:     c.number,
-      imageUrl:    buildImageUrl(c.set, c.number),
-      rarity:      c.rarity ?? null,
-      category:    c.type ?? 'pokemon',
-      set:         { id: c.set, name: setNames.get(c.set) ?? c.set },
-      types:       c.element ? [c.element] : undefined,
-      hp:          c.health,
-      illustrator: undefined,
-    }));
+    .map(c => {
+      const expansionId = getExpansionId(c.id);
+      const localId     = c.id.split('-').pop() ?? c.id;
+      return {
+        id:          c.id,
+        name:        c.name,
+        localId,
+        imageUrl:    c.image,
+        rarity:      c.rarity   || null,
+        set:         { id: expansionId, name: setMap.get(expansionId) ?? expansionId },
+        pack:        c.pack     || null,
+        type:        c.type     || null,
+        hp:          c.health   ? parseInt(c.health, 10) : null,
+        illustrator: c.artist   || null,
+        fullArt:     c.fullart  === 'Yes',
+        isEx:        c.ex       === 'Yes',
+      };
+    });
 }
