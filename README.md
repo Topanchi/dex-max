@@ -12,8 +12,9 @@ Aplicación web completa para explorar todos los Pokémon con arte oficial, esta
 | [Tailwind CSS](https://tailwindcss.com/) | 3.4 |
 
 **APIs externas** (sin API key, públicas):
-- [PokéAPI v2](https://pokeapi.co/) — datos de Pokémon
-- [Pokémon TCG API v2](https://pokemontcg.io/) — cartas coleccionables
+- [PokéAPI v2](https://pokeapi.co/) — datos de Pokémon (tipos, estadísticas, evoluciones, sprites)
+- [Pokémon TCG API v2](https://api.pokemontcg.io/v2) — cartas TCG tradicional
+- [pokemon-tcg-pocket-cards](https://github.com/chase-manning/pokemon-tcg-pocket-cards) — datos de TCG Pocket
 
 ---
 
@@ -52,11 +53,15 @@ No requiere variables de entorno.
 - **Cartas TCG** — todas las cartas en inglés del Pokémon
 
 ### Cartas TCG
-- Paginación completa (`pageSize=250`) para obtener **todas las cartas**, sin límite
-- Incluye cartas con nombre base (`Charizard*`), variantes `M Nombre-EX` y `Mega Nombre`
-- Matching robusto: acepta sufijos especiales (☆ Star, ◇ Prism, ex, GX, V, VMAX…) sin falsos positivos (Mew no captura Mewtwo)
-- Ordenadas por fecha de set descendente (más recientes primero)
-- Modal con imagen ampliada, rareza, PS, tipos TCG e ilustrador
+- **TCG tradicional**: [Pokémon TCG API v2](https://api.pokemontcg.io/v2) — sin autenticación (límite 1000 req/día)
+  - Paginación completa (`pageSize=250`) para obtener **todas las cartas**, sin límite
+  - Incluye cartas con nombre base (`Charizard*`), variantes `M Nombre-EX` y `Mega Nombre`
+  - Matching robusto: acepta sufijos especiales (☆ Star, ◇ Prism, ex, GX, V, VMAX…) sin falsos positivos (Mew no captura Mewtwo)
+  - Ordenadas por fecha de set descendente (más recientes primero)
+  - Modal con imagen ampliada, rareza, PS, tipos TCG e ilustrador
+- **TCG Pocket**: [chase-manning/pokemon-tcg-pocket-cards](https://github.com/chase-manning/pokemon-tcg-pocket-cards) — datos completos de la app móvil
+  - Cartas de todas las expansiones disponibles en TCG Pocket
+  - Datos extraídos de Limitless TCG
 
 ---
 
@@ -100,7 +105,8 @@ components/ui/
 
 services/
   pokeapi.ts                     # Integración PokéAPI: fetchers, mappers, caché 24h
-  tcgdex.ts                      # Integración TCG API: paginación completa, matching
+  tcgdex.ts                      # Integración Pokémon TCG API v2: paginación completa, matching
+  tcgpocket.ts                   # Integración TCG Pocket: datos de GitHub (chase-manning)
 
 lib/
   fetcher.ts                     # fetch wrapper con revalidate y manejo de errores
