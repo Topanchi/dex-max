@@ -28,6 +28,7 @@ interface RawItem {
   sprites: { default: string | null };
   category: { name: string };
   attributes: Array<{ name: string }>;
+  names: Array<{ name: string; language: { name: string } }>;
   flavor_text_entries: Array<{
     flavor_text: string;
     language: { name: string };
@@ -103,10 +104,13 @@ export async function fetchItems(): Promise<Item[]> {
       const enEffect = item.effect_entries.find(e => e.language.name === 'en');
       const enFlavor = item.flavor_text_entries.find(e => e.language.name === 'en');
 
+      const esName = item.names?.find(n => n.language.name === 'es')?.name ?? '';
+
       return {
         id: item.id,
         name: item.name,
         displayName: normalizePokemonName(item.name),
+        nameEs: esName,
         sprite: item.sprites.default ?? '',
         cost: item.cost,
         effect: enEffect?.short_effect ?? '',

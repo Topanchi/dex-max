@@ -10,6 +10,7 @@ export interface Item {
   id: number;
   name: string;
   displayName: string;
+  nameEs: string;
   sprite: string;
   cost: number;
   effect: string;

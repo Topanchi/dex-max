@@ -19,7 +19,11 @@ export function ItemDetail({ item, onClose }: Props) {
   const badgeColor = POCKET_COLORS[item.pocket] ?? 'text-slate-400 bg-slate-400/10';
 
   return (
-    <Modal isOpen={!!item} onClose={onClose} title={item.displayName}>
+    <Modal
+      isOpen={!!item}
+      onClose={onClose}
+      title={item.nameEs ? `${item.displayName} / ${item.nameEs}` : item.displayName}
+    >
       <div className="px-4 sm:px-6 py-4 space-y-6">
 
         {/* ── Sprite ───────────────────────────────────── */}
@@ -54,7 +58,7 @@ export function ItemDetail({ item, onClose }: Props) {
             {item.cost > 0 && (
               <div className="bg-[#0f0f1a] rounded-xl px-4 py-3" suppressHydrationWarning>
                 <p className="text-[10px] text-slate-500 mb-1">Precio</p>
-                <p className="text-sm font-semibold text-yellow-400">₽{item.cost.toLocaleString()}</p>
+                <p className="text-sm font-semibold text-yellow-400">₽{item.cost}</p>
               </div>
             )}
           </div>

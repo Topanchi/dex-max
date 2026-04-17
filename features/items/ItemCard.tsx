@@ -33,7 +33,12 @@ export function ItemCard({ item, onSelect }: Props) {
 
       {/* Info */}
       <div className="px-3 pb-3 pt-2.5">
-        <p className="text-sm font-semibold text-white mb-1.5 line-clamp-1">{displayName}</p>
+        <p className="text-sm font-semibold text-white mb-1.5 line-clamp-2 leading-snug">
+          {displayName}
+          {item.nameEs && (
+            <span className="text-slate-400 font-normal"> / {item.nameEs}</span>
+          )}
+        </p>
 
         <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full mb-2 ${color}`}>
           {categoryLabel}
@@ -41,7 +46,7 @@ export function ItemCard({ item, onSelect }: Props) {
 
         {cost > 0 && (
           <p className="text-xs text-slate-500 mb-1.5" suppressHydrationWarning>
-            <span className="text-yellow-500 font-medium">₽{cost.toLocaleString()}</span>
+            <span className="text-yellow-500 font-medium">₽{cost}</span>
           </p>
         )}
 
