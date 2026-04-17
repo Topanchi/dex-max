@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'archives.bulbagarden.net',
+        pathname: '/media/upload/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'raw.githubusercontent.com',
         pathname: '/chase-manning/pokemon-tcg-pocket-cards/**',
       },

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
+import { NavLinks } from '@/components/ui/NavLinks';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -26,14 +27,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Header */}
         <header className="sticky top-0 z-50 bg-[#0f0f1a]/90 backdrop-blur-md border-b border-[#2a2a4e]">
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-10 3xl:px-12 py-3 flex items-center gap-3">
-            {/* Pokéball icon */}
+            {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-3 group focus:outline-none"
+              className="flex items-center gap-3 group focus:outline-none flex-shrink-0"
               aria-label="Ir al inicio"
             >
               <div
-                className="w-8 h-8 rounded-full bg-red-500 border-2 border-white relative overflow-hidden flex-shrink-0
+                className="w-8 h-8 rounded-full bg-red-500 border-2 border-white relative overflow-hidden
                            group-hover:scale-110 transition-transform"
                 aria-hidden="true"
               >
@@ -42,8 +43,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                -translate-x-1/2 -translate-y-1/2 z-10" />
                 <div className="absolute bottom-0 left-0 right-0 top-1/2 bg-white" />
               </div>
-              <span className="text-xl font-bold tracking-tight">Pokédex</span>
             </Link>
+
+            {/* Nav tabs */}
+            <NavLinks />
           </div>
         </header>
 
