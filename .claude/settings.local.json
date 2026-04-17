@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:tcgdex.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -I https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -s https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/cards.extra.json)",
+      "Bash(python3 -c \"import json, sys; data = json.load\\(sys.stdin\\); [print\\(f'{i+1}. {card.get\\(\\\\\"name\\\\\", \\\\\"N/A\\\\\"\\)}: image = {card.get\\(\\\\\"image\\\\\", \\\\\"N/A\\\\\"\\)}'\\) for i, card in enumerate\\(data[:5]\\)]\")",
+      "Bash(curl -s https://api.github.com/repos/flibustier/pokemon-tcg-pocket-database/contents/dist/images?ref=main)",
+      "Bash(curl -I https://github.com/flibustier/pokemon-tcg-pocket-database/raw/main/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -s https://api.github.com/repos/flibustier/pokemon-tcg-pocket-database/releases/latest)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -I https://raw.githubusercontent.com/flibustier/pokemon-tcg-exchange/main/public/images/cards/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -I https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-pocket-database@latest/dist/images/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl -I https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-exchange@main/public/images/cards/cPK_10_000010_00_FUSHIGIDANE_C.webp)",
+      "Bash(curl:*)",
+      "Bash(grep *)",
+      "Bash(npx tsc *)",
+      "WebFetch(domain:pokeapi.co)",
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:play.pokemonshowdown.com)",
+      "WebFetch(domain:resource.pokemon-home.com)",
+      "WebFetch(domain:img.pokemondb.net)",
+      "Bash(python3 -c 'from PIL import Image; img=Image.open\\('\\\\''__TRACKED_VAR__'\\\\''\\); print\\('\\\\''__TRACKED_VAR__'\\\\'', img.size\\)')",
+      "Bash(node -e 'const fs=require\\('\\\\''fs'\\\\''\\),buf=fs.readFileSync\\('\\\\''__TRACKED_VAR__'\\\\''\\);const w=buf.readUInt32BE\\(16\\),h=buf.readUInt32BE\\(20\\);console.log\\('\\\\''__TRACKED_VAR__'\\\\'',w+'\\\\''x'\\\\''+h\\)')",
+      "WebFetch(domain:www.serebii.net)",
+      "WebFetch(domain:archives.bulbagarden.net)",
+      "WebFetch(domain:bulbapedia.bulbagarden.net)",
+      "Bash(node -e \"const fs=require\\('fs'\\),buf=fs.readFileSync\\('C:/Users/Francisco/Documents/PERSONAL/PROYECTOS_PERSONALES/dex-max/tmp_compare/sugimori_poke.png'\\);const w=buf.readUInt32BE\\(16\\),h=buf.readUInt32BE\\(20\\);console.log\\('sugimori_poke.png',w+'x'+h,'bytes:'+buf.length\\)\")",
+      "WebFetch(domain:www.wikidex.net)",
+      "Bash(node -e \"const fs=require\\('fs'\\),buf=fs.readFileSync\\('tmp_wikidex_poke.png'\\);const w=buf.readUInt32BE\\(16\\),h=buf.readUInt32BE\\(20\\);console.log\\(w+'x'+h,'bytes:'+buf.length\\)\")",
+      "Bash(rm tmp_wikidex_poke.png)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}
