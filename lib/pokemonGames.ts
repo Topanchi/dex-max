@@ -51,6 +51,8 @@ export const GAME_CATALOG: Record<string, GameMeta> = {
   // Gen IX
   scarlet:           { title: 'Scarlet / Violet',                  year: 2022, generation: 9, region: 'Paldea' },
   violet:            { title: 'Scarlet / Violet',                  year: 2022, generation: 9, region: 'Paldea' },
+  // Gen X
+  'legends-za':      { title: 'Legends: Z-A',                      year: 2025, generation: 10, region: 'Kalos' },
 };
 
 export const GEN_COLORS: Record<number, { text: string; bg: string; dot: string }> = {
@@ -62,5 +64,6 @@ export const GEN_COLORS: Record<number, { text: string; bg: string; dot: string 
   6: { text: 'text-teal-400',   bg: 'bg-teal-500/15',   dot: 'bg-teal-400' },
   7: { text: 'text-orange-400', bg: 'bg-orange-500/15', dot: 'bg-orange-400' },
   8: { text: 'text-purple-400', bg: 'bg-purple-500/15', dot: 'bg-purple-400' },
-  9: { text: 'text-pink-400',   bg: 'bg-pink-500/15',   dot: 'bg-pink-400' },
+  9:  { text: 'text-pink-400',   bg: 'bg-pink-500/15',   dot: 'bg-pink-400' },
+  10: { text: 'text-cyan-400',  bg: 'bg-cyan-500/15',   dot: 'bg-cyan-400' },
 };
