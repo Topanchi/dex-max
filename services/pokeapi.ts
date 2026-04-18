@@ -154,6 +154,12 @@ type RawSpriteSetLike = {
   front_shiny?: string | null;
   back_default?: string | null;
   back_shiny?: string | null;
+  animated?: {
+    front_default?: string | null;
+    front_shiny?: string | null;
+    back_default?: string | null;
+    back_shiny?: string | null;
+  };
 };
 
 function spritesFromSet(
@@ -163,10 +169,15 @@ function spritesFromSet(
 ): SpriteEntry[] {
   if (!set) return [];
   const entries: SpriteEntry[] = [];
-  if (set.front_default) entries.push({ generation, game, label: 'Frontal',       url: set.front_default });
-  if (set.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny', url: set.front_shiny });
-  if (set.back_default)  entries.push({ generation, game, label: 'Trasero',        url: set.back_default });
-  if (set.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny',  url: set.back_shiny });
+  if (set.front_default) entries.push({ generation, game, label: 'Frontal',             url: set.front_default });
+  if (set.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny',       url: set.front_shiny });
+  if (set.back_default)  entries.push({ generation, game, label: 'Trasero',             url: set.back_default });
+  if (set.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny',       url: set.back_shiny });
+  const anim = set.animated;
+  if (anim?.front_default) entries.push({ generation, game, label: 'Frontal Anim.',       url: anim.front_default });
+  if (anim?.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny Anim.', url: anim.front_shiny });
+  if (anim?.back_default)  entries.push({ generation, game, label: 'Trasero Anim.',       url: anim.back_default });
+  if (anim?.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny Anim.', url: anim.back_shiny });
   return entries;
 }
 
