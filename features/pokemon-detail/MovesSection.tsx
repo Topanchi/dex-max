@@ -2,17 +2,9 @@
 
 import { useState } from 'react';
 import { GEN_COLORS } from '@/lib/pokemonGames';
-import { getTypeColor } from '@/utils/typeColors';
+import { getTypeColor, getTypeLabel } from '@/utils/typeColors';
 import type { VersionGroupMoves } from '@/types/pokemon';
 
-const TYPE_ES: Record<string, string> = {
-  normal:   'Normal',    fire:     'Fuego',    water:    'Agua',
-  electric: 'Eléctrico', grass:    'Planta',   ice:      'Hielo',
-  fighting: 'Lucha',     poison:   'Veneno',   ground:   'Tierra',
-  flying:   'Volador',   psychic:  'Psíquico', bug:      'Bicho',
-  rock:     'Roca',      ghost:    'Fantasma', dragon:   'Dragón',
-  dark:     'Siniestro', steel:    'Acero',    fairy:    'Hada',
-};
 
 const CLASS_META: Record<string, { label: string; className: string }> = {
   physical: { label: 'Físico',   className: 'bg-orange-500/20 text-orange-300' },
@@ -91,7 +83,7 @@ export function MovesSection({ moves }: Props) {
                             <td className="px-3 py-1.5 text-slate-200">{move.displayName}</td>
                             <td className="px-3 py-1.5">
                               <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${typeColor.bg} ${typeColor.text}`}>
-                                {TYPE_ES[move.type] ?? move.type}
+                                {getTypeLabel(move.type)}
                               </span>
                             </td>
                             <td className="px-3 py-1.5">
@@ -142,7 +134,7 @@ export function MovesSection({ moves }: Props) {
                             <td className="px-3 py-1.5 text-slate-200">{move.displayName}</td>
                             <td className="px-3 py-1.5">
                               <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${typeColor.bg} ${typeColor.text}`}>
-                                {TYPE_ES[move.type] ?? move.type}
+                                {getTypeLabel(move.type)}
                               </span>
                             </td>
                             <td className="px-3 py-1.5">
