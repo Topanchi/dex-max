@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <rect width="56" height="36" rx="6" fill="#dd7700"/>
+  <rect x="28" width="28" height="36" fill="#221144"/>
+  <line x1="28" y1="0" x2="28" y2="36" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+  <!-- Sun -->
+  <circle cx="14" cy="18" r="7" fill="#ffdd00" opacity="0.95"/>
+  <line x1="14" y1="7" x2="14" y2="5" stroke="#ffdd00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="14" y1="29" x2="14" y2="31" stroke="#ffdd00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="3" y1="18" x2="1" y2="18" stroke="#ffdd00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="25" y1="18" x2="27" y2="18" stroke="#ffdd00" stroke-width="2" stroke-linecap="round"/>
+  <!-- Moon -->
+  <path d="M46,10 C40,12 38,20 44,26 C36,24 34,14 40,10 C42,9 44,9 46,10Z" fill="#ccccff" opacity="0.95"/>
+</svg>

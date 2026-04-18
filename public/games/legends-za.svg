@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <defs>
+    <linearGradient id="za" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111122"/>
+      <stop offset="100%" stop-color="#221133"/>
+    </linearGradient>
+  </defs>
+  <rect width="56" height="36" rx="6" fill="url(#za)"/>
+  <!-- Mega Evolution symbol stylized as Z-A -->
+  <text x="13" y="24" font-family="sans-serif" font-size="16" font-weight="900" fill="#00ccff" text-anchor="middle" opacity="0.95">Z</text>
+  <line x1="24" y1="8" x2="24" y2="28" stroke="#555577" stroke-width="1" opacity="0.6"/>
+  <text x="41" y="24" font-family="sans-serif" font-size="16" font-weight="900" fill="#cc44ff" text-anchor="middle" opacity="0.95">A</text>
+  <!-- glow dots -->
+  <circle cx="28" cy="18" r="2" fill="#ffffff" opacity="0.15"/>
+  <text x="28" y="33" font-family="sans-serif" font-size="5" font-weight="600" fill="#8888bb" text-anchor="middle">LEGENDS</text>
+</svg>

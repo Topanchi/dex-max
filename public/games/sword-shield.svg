@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <rect width="56" height="36" rx="6" fill="#003366"/>
+  <rect x="28" width="28" height="36" fill="#660022"/>
+  <line x1="28" y1="0" x2="28" y2="36" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+  <!-- Sword -->
+  <line x1="14" y1="8" x2="14" y2="26" stroke="#88ccff" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="10" y1="14" x2="18" y2="14" stroke="#88ccff" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="14,26 12,30 16,30" fill="#88ccff"/>
+  <!-- Shield -->
+  <path d="M42,9 L48,12 L48,20 C48,25 42,29 42,29 C42,29 36,25 36,20 L36,12 Z" fill="#ff6688" stroke="white" stroke-width="1" opacity="0.9"/>
+  <line x1="42" y1="12" x2="42" y2="26" stroke="white" stroke-width="1" opacity="0.5"/>
+</svg>

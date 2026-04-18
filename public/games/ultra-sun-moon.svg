@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <rect width="56" height="36" rx="6" fill="#993300"/>
+  <rect x="28" width="28" height="36" fill="#110033"/>
+  <line x1="28" y1="0" x2="28" y2="36" stroke="#ffaa00" stroke-width="1.5" opacity="0.5"/>
+  <!-- Ultra sun burst -->
+  <circle cx="14" cy="18" r="6" fill="#ff8800" opacity="0.95"/>
+  <circle cx="14" cy="18" r="9" fill="none" stroke="#ffaa00" stroke-width="1" stroke-dasharray="2,2" opacity="0.7"/>
+  <!-- Ultra moon -->
+  <path d="M46,11 C41,13 39,21 45,27 C37,25 35,15 41,11 C43,10 45,10 46,11Z" fill="#ffaaff" opacity="0.95"/>
+  <circle cx="43" cy="15" r="2" fill="#8800cc" opacity="0.6"/>
+</svg>
