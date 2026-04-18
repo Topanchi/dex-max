@@ -10,6 +10,7 @@ import { EvolutionChainView } from './EvolutionChainView';
 import { FormsSection } from './FormsSection';
 import { TCGSection } from './TCGSection';
 import { TCGPocketSection } from './TCGPocketSection';
+import { MovesSection } from './MovesSection';
 import {
   normalizePokemonName,
   formatPokedexNumber,
@@ -17,6 +18,7 @@ import {
   formatWeight,
 } from '@/utils/normalize';
 import { getTypeGradient } from '@/utils/typeColors';
+import { GEN_COLORS } from '@/lib/pokemonGames';
 import type { PokemonDetail } from '@/types/pokemon';
 
 const EEVEE_FAMILY = new Set([
@@ -37,6 +39,8 @@ interface Props {
 
 export function PokemonDetailView({ pokemon }: Props) {
   const [spriteGallery, setSpriteGallery] = useState(false);
+  const [gameLocations, setGameLocations] = useState(false);
+  const [movesOpen, setMovesOpen] = useState(false);
   const isEeveeFamily = EEVEE_FAMILY.has(pokemon.id);
 
   const displayName = normalizePokemonName(pokemon.name);
@@ -300,6 +304,74 @@ export function PokemonDetailView({ pokemon }: Props) {
         </section>
       )}
 
+
+      {/* ─── Game locations ───────────────────────────────────────────────── */}
+      {pokemon.gameAppearances.length > 0 && (
+        <section aria-label="Localización videojuegos">
+          <button
+            onClick={() => setGameLocations(v => !v)}
+            className="flex items-center gap-2 w-full text-left mb-3 sm:mb-4
+                       focus:outline-none focus:ring-2 focus:ring-white/30 rounded
+                       touch-manipulation group"
+            aria-expanded={gameLocations}
+          >
+            <h2 className="text-base sm:text-lg font-bold text-white">Disponibilidad videojuegos</h2>
+            <svg
+              className={`w-4 h-4 text-slate-400 group-hover:text-white transition-all flex-shrink-0
+                          ${gameLocations ? 'rotate-90' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {gameLocations && (
+            <div className="flex flex-wrap gap-2">
+              {pokemon.gameAppearances.map(game => {
+                const colors = GEN_COLORS[game.generation] ?? GEN_COLORS[1];
+                return (
+                  <div
+                    key={game.title}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
+                                border border-white/10 ${colors.bg} ${colors.text}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${colors.dot}`} />
+                    {game.title}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* ─── Moves ───────────────────────────────────────────────────────── */}
+      {pokemon.moves.length > 0 && (
+        <section aria-label="Movimientos">
+          <button
+            onClick={() => setMovesOpen(v => !v)}
+            className="flex items-center gap-2 w-full text-left mb-3 sm:mb-4
+                       focus:outline-none focus:ring-2 focus:ring-white/30 rounded
+                       touch-manipulation group"
+            aria-expanded={movesOpen}
+          >
+            <h2 className="text-base sm:text-lg font-bold text-white">Movimientos</h2>
+            <svg
+              className={`w-4 h-4 text-slate-400 group-hover:text-white transition-all flex-shrink-0
+                          ${movesOpen ? 'rotate-90' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {movesOpen && <MovesSection moves={pokemon.moves} />}
+        </section>
+      )}
 
       {/* ─── TCG cards ────────────────────────────────────────────────────── */}
       <TCGSection pokemonName={pokemon.name} />

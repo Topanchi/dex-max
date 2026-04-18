@@ -5,6 +5,7 @@ import {
   normalizeFormDisplayName,
 } from '@/utils/normalize';
 import { getOfficialArtworkUrl, getOfficialShinyUrl } from '@/utils/sprites';
+import { GAME_CATALOG } from '@/lib/pokemonGames';
 import type {
   RawPokemon,
   RawSprites,
@@ -24,6 +25,9 @@ import type {
   TypePokemonEntry,
   PokemonNameEntry,
   SpeciesInfo,
+  GameAppearance,
+  VersionGroupMoves,
+  RawMoveDetail,
 } from '@/types/pokemon';
 
 const BASE = 'https://pokeapi.co/api/v2';
@@ -150,6 +154,12 @@ type RawSpriteSetLike = {
   front_shiny?: string | null;
   back_default?: string | null;
   back_shiny?: string | null;
+  animated?: {
+    front_default?: string | null;
+    front_shiny?: string | null;
+    back_default?: string | null;
+    back_shiny?: string | null;
+  };
 };
 
 function spritesFromSet(
@@ -159,10 +169,15 @@ function spritesFromSet(
 ): SpriteEntry[] {
   if (!set) return [];
   const entries: SpriteEntry[] = [];
-  if (set.front_default) entries.push({ generation, game, label: 'Frontal',       url: set.front_default });
-  if (set.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny', url: set.front_shiny });
-  if (set.back_default)  entries.push({ generation, game, label: 'Trasero',        url: set.back_default });
-  if (set.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny',  url: set.back_shiny });
+  if (set.front_default) entries.push({ generation, game, label: 'Frontal',             url: set.front_default });
+  if (set.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny',       url: set.front_shiny });
+  if (set.back_default)  entries.push({ generation, game, label: 'Trasero',             url: set.back_default });
+  if (set.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny',       url: set.back_shiny });
+  const anim = set.animated;
+  if (anim?.front_default) entries.push({ generation, game, label: 'Frontal Anim.',       url: anim.front_default });
+  if (anim?.front_shiny)   entries.push({ generation, game, label: 'Frontal Shiny Anim.', url: anim.front_shiny });
+  if (anim?.back_default)  entries.push({ generation, game, label: 'Trasero Anim.',       url: anim.back_default });
+  if (anim?.back_shiny)    entries.push({ generation, game, label: 'Trasero Shiny Anim.', url: anim.back_shiny });
   return entries;
 }
 
@@ -194,6 +209,188 @@ function extractGenerationSprites(raw: RawPokemon): SpriteEntry[] {
   entries.sort((a, b) => a.generation - b.generation);
 
   return entries;
+}
+
+// Maps PokéAPI Pokédex slugs to the version names in GAME_CATALOG.
+// game_indices only covers Gen 1–5 reliably; pokedex_numbers fills Gen 6–9.
+const POKEDEX_VERSIONS: Record<string, string[]> = {
+  'kanto':              ['red', 'blue', 'yellow'],
+  'updated-kanto':      ['firered', 'leafgreen'],
+  'original-johto':     ['gold', 'silver', 'crystal'],
+  'updated-johto':      ['heartgold', 'soulsilver'],
+  'extended-sinnoh':    ['heartgold', 'soulsilver'],
+  'hoenn':              ['ruby', 'sapphire', 'emerald'],
+  'updated-hoenn':      ['omega-ruby', 'alpha-sapphire'],
+  'original-sinnoh':    ['diamond', 'pearl', 'platinum'],
+  'updated-sinnoh':     ['brilliant-diamond', 'shining-pearl'],
+  'original-unova':     ['black', 'white'],
+  'updated-unova':      ['black-2', 'white-2'],
+  'kalos-central':      ['x', 'y'],
+  'kalos-coastal':      ['x', 'y'],
+  'kalos-mountain':     ['x', 'y'],
+  'original-alola':     ['sun', 'moon'],
+  'original-melemele':  ['sun', 'moon'],
+  'original-akala':     ['sun', 'moon'],
+  'original-ulaula':    ['sun', 'moon'],
+  'original-poni':      ['sun', 'moon'],
+  'updated-alola':      ['ultra-sun', 'ultra-moon'],
+  'updated-melemele':   ['ultra-sun', 'ultra-moon'],
+  'updated-akala':      ['ultra-sun', 'ultra-moon'],
+  'updated-ulaula':     ['ultra-sun', 'ultra-moon'],
+  'updated-poni':       ['ultra-sun', 'ultra-moon'],
+  'original-galar':     ['sword', 'shield'],
+  'galar':              ['sword', 'shield'],
+  'isle-of-armor':      ['sword', 'shield'],
+  'crown-tundra':       ['sword', 'shield'],
+  'hisui':              ['legends-arceus'],
+  'paldea':             ['scarlet', 'violet'],
+  'original-paldea':    ['scarlet', 'violet'],
+  'kitakami':           ['scarlet', 'violet'],
+  'blueberry':          ['scarlet', 'violet'],
+};
+
+function buildGameAppearances(
+  gameIndices: RawPokemon['game_indices'],
+  pokedexNames: string[],
+): GameAppearance[] {
+  const seen = new Set<string>();
+  const result: GameAppearance[] = [];
+
+  const addVersion = (versionName: string) => {
+    const meta = GAME_CATALOG[versionName];
+    if (!meta || seen.has(meta.title)) return;
+    seen.add(meta.title);
+    result.push({ versionName, ...meta });
+  };
+
+  for (const entry of gameIndices) {
+    if (entry.version?.name) addVersion(entry.version.name);
+  }
+
+  for (const pokedexName of pokedexNames) {
+    for (const versionName of POKEDEX_VERSIONS[pokedexName] ?? []) {
+      addVersion(versionName);
+    }
+  }
+
+  return result.sort((a, b) => a.year - b.year || a.generation - b.generation);
+}
+
+// ─── Move processing ─────────────────────────────────────────────────────────
+
+const VERSION_GROUP_META: Record<string, { label: string; generation: number }> = {
+  'red-blue':                            { label: 'Rojo/Azul',           generation: 1 },
+  'yellow':                              { label: 'Amarillo',             generation: 1 },
+  'gold-silver':                         { label: 'Oro/Plata',            generation: 2 },
+  'crystal':                             { label: 'Cristal',              generation: 2 },
+  'ruby-sapphire':                       { label: 'Rubí/Zafiro',          generation: 3 },
+  'emerald':                             { label: 'Esmeralda',            generation: 3 },
+  'firered-leafgreen':                   { label: 'RJ/VH',                generation: 3 },
+  'diamond-pearl':                       { label: 'Diamante/Perla',       generation: 4 },
+  'platinum':                            { label: 'Platino',              generation: 4 },
+  'heartgold-soulsilver':                { label: 'OHG/PA',               generation: 4 },
+  'black-white':                         { label: 'Negro/Blanco',         generation: 5 },
+  'black-2-white-2':                     { label: 'Negro 2/Blanco 2',     generation: 5 },
+  'x-y':                                 { label: 'X/Y',                  generation: 6 },
+  'omega-ruby-alpha-sapphire':           { label: 'OR/AS',                generation: 6 },
+  'sun-moon':                            { label: 'Sol/Luna',             generation: 7 },
+  'ultra-sun-ultra-moon':                { label: 'UltraSol/UltraLuna',  generation: 7 },
+  'lets-go-pikachu-lets-go-eevee':       { label: "Let's Go",             generation: 7 },
+  'sword-shield':                        { label: 'Espada/Escudo',        generation: 8 },
+  'the-isle-of-armor':                   { label: 'Isla Armadura',        generation: 8 },
+  'the-crown-tundra':                    { label: 'Tierra Corona',        generation: 8 },
+  'brilliant-diamond-and-shining-pearl': { label: 'BD/SP',                generation: 8 },
+  'legends-arceus':                      { label: 'Leyendas: Arceus',     generation: 8 },
+  'scarlet-violet':                      { label: 'Escarlata/Violeta',    generation: 9 },
+  'the-teal-mask':                       { label: 'Máscara Turquesa',     generation: 9 },
+  'the-indigo-disk':                     { label: 'Disco Índigo',         generation: 9 },
+};
+
+const VG_ORDER = Object.keys(VERSION_GROUP_META);
+
+function formatMoveName(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+type MoveDetailMap = Map<string, { type: string; damageClass: string; displayName: string }>;
+
+async function fetchAllMoveDetails(rawMoves: RawPokemon['moves']): Promise<MoveDetailMap> {
+  const unique = new Map(rawMoves.map(m => [m.move.name, m.move.url]));
+  const results = await Promise.all(
+    Array.from(unique.entries()).map(async ([name, url]) => {
+      const detail = await fetcherSafe<RawMoveDetail>(url, { revalidate: REVALIDATE });
+      return [name, detail] as const;
+    }),
+  );
+  const map: MoveDetailMap = new Map();
+  for (const [name, detail] of results) {
+    if (detail) {
+      const esName = detail.names.find(n => n.language.name === 'es')?.name
+        ?? detail.names.find(n => n.language.name === 'en')?.name
+        ?? formatMoveName(name);
+      map.set(name, {
+        type: detail.type.name,
+        damageClass: detail.damage_class?.name ?? 'status',
+        displayName: esName,
+      });
+    }
+  }
+  return map;
+}
+
+function processMoves(rawMoves: RawPokemon['moves'], detailMap: MoveDetailMap): VersionGroupMoves[] {
+  const groups = new Map<string, {
+    levelUp: Map<string, number>;
+    machine: Set<string>;
+  }>();
+
+  for (const moveEntry of rawMoves) {
+    const slug = moveEntry.move.name;
+    for (const detail of moveEntry.version_group_details) {
+      const vg = detail.version_group.name;
+      if (!VERSION_GROUP_META[vg]) continue;
+
+      if (!groups.has(vg)) groups.set(vg, { levelUp: new Map(), machine: new Set() });
+      const group = groups.get(vg)!;
+      const method = detail.move_learn_method.name;
+
+      if (method === 'level-up') {
+        group.levelUp.set(slug, detail.level_learned_at);
+      } else if (method === 'machine') {
+        group.machine.add(slug);
+      }
+    }
+  }
+
+  const getMoveInfo = (slug: string) => {
+    const d = detailMap.get(slug);
+    return {
+      displayName: d?.displayName ?? formatMoveName(slug),
+      type: d?.type ?? 'normal',
+      damageClass: d?.damageClass ?? 'status',
+    };
+  };
+
+  const result: VersionGroupMoves[] = [];
+  for (const [vg, data] of groups) {
+    const meta = VERSION_GROUP_META[vg]!;
+    result.push({
+      versionGroup: vg,
+      label: meta.label,
+      generation: meta.generation,
+      levelUp: Array.from(data.levelUp.entries())
+        .map(([slug, level]) => ({ slug, level, ...getMoveInfo(slug) }))
+        .sort((a, b) => a.level - b.level || a.displayName.localeCompare(b.displayName)),
+      machine: Array.from(data.machine)
+        .map(slug => ({ slug, ...getMoveInfo(slug) }))
+        .sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    });
+  }
+
+  return result.sort((a, b) => {
+    if (a.generation !== b.generation) return a.generation - b.generation;
+    return VG_ORDER.indexOf(a.versionGroup) - VG_ORDER.indexOf(b.versionGroup);
+  });
 }
 
 function extractImageUrl(raw: RawPokemon): string | null {
@@ -356,7 +553,7 @@ export async function fetchPokemonByType(
 
 async function fetchSpeciesAndChain(
   raw: RawPokemon,
-): Promise<{ species: SpeciesInfo; evolutionChain: EvolutionNode | null }> {
+): Promise<{ species: SpeciesInfo; evolutionChain: EvolutionNode | null; pokedexNames: string[] }> {
   const speciesId = getIdFromUrl(raw.species.url);
   const speciesData = await fetcherSafe<RawSpecies>(
     `${BASE}/pokemon-species/${speciesId}`,
@@ -383,6 +580,8 @@ async function fetchSpeciesAndChain(
         generation: 'unknown',
       };
 
+  const pokedexNames = speciesData?.pokedex_numbers?.map(p => p.pokedex.name) ?? [];
+
   let evolutionChain: EvolutionNode | null = null;
   if (speciesData?.evolution_chain?.url) {
     const chainId = getIdFromUrl(speciesData.evolution_chain.url);
@@ -393,7 +592,7 @@ async function fetchSpeciesAndChain(
     if (chain) evolutionChain = mapEvolutionNode(chain.chain);
   }
 
-  return { species, evolutionChain };
+  return { species, evolutionChain, pokedexNames };
 }
 
 async function fetchVariants(raw: RawPokemon): Promise<PokemonVariant[]> {
@@ -444,10 +643,10 @@ export async function fetchPokemonDetail(
 ): Promise<PokemonDetail> {
   const raw = await fetchRawPokemon(idOrName);
 
-  // Species+chain and variants can be fetched in parallel
-  const [{ species, evolutionChain }, variants] = await Promise.all([
+  const [{ species, evolutionChain, pokedexNames }, variants, moveDetailMap] = await Promise.all([
     fetchSpeciesAndChain(raw),
     fetchVariants(raw),
+    fetchAllMoveDetails(raw.moves ?? []),
   ]);
 
   return {
@@ -472,5 +671,7 @@ export async function fetchPokemonDetail(
     evolutionChain,
     variants,
     cryUrl: raw.cries?.latest ?? null,
+    gameAppearances: buildGameAppearances(raw.game_indices ?? [], pokedexNames),
+    moves: processMoves(raw.moves ?? [], moveDetailMap),
   };
 }
