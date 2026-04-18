@@ -87,6 +87,7 @@ export interface RawPokemon {
     latest: string | null;
     legacy: string | null;
   } | null;
+  game_indices: Array<{ game_index: number; version: { name: string; url: string } }>;
 }
 
 export interface RawFlavorText {
@@ -113,6 +114,7 @@ export interface RawSpecies {
   color: { name: string };
   shape: { name: string } | null;
   generation: { name: string };
+  pokedex_numbers: Array<{ entry_number: number; pokedex: { name: string; url: string } }>;
 }
 
 export interface RawEvolutionDetail {
@@ -229,6 +231,14 @@ export interface SpeciesInfo {
   generation: string;
 }
 
+export interface GameAppearance {
+  versionName: string;
+  title: string;
+  year: number;
+  generation: number;
+  region: string;
+}
+
 export interface PokemonDetail {
   id: number;
   name: string;
@@ -242,6 +252,7 @@ export interface PokemonDetail {
   evolutionChain: EvolutionNode | null;
   variants: PokemonVariant[];
   cryUrl: string | null;
+  gameAppearances: GameAppearance[];
 }
 
 export interface PokemonListPageResult {

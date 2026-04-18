@@ -5,6 +5,7 @@ import {
   normalizeFormDisplayName,
 } from '@/utils/normalize';
 import { getOfficialArtworkUrl, getOfficialShinyUrl } from '@/utils/sprites';
+import { GAME_CATALOG } from '@/lib/pokemonGames';
 import type {
   RawPokemon,
   RawSprites,
@@ -24,6 +25,7 @@ import type {
   TypePokemonEntry,
   PokemonNameEntry,
   SpeciesInfo,
+  GameAppearance,
 } from '@/types/pokemon';
 
 const BASE = 'https://pokeapi.co/api/v2';
@@ -196,6 +198,71 @@ function extractGenerationSprites(raw: RawPokemon): SpriteEntry[] {
   return entries;
 }
 
+// Maps PokéAPI Pokédex slugs to the version names in GAME_CATALOG.
+// game_indices only covers Gen 1–5 reliably; pokedex_numbers fills Gen 6–9.
+const POKEDEX_VERSIONS: Record<string, string[]> = {
+  'kanto':              ['red', 'blue', 'yellow'],
+  'updated-kanto':      ['firered', 'leafgreen'],
+  'original-johto':     ['gold', 'silver', 'crystal'],
+  'updated-johto':      ['heartgold', 'soulsilver'],
+  'extended-sinnoh':    ['heartgold', 'soulsilver'],
+  'hoenn':              ['ruby', 'sapphire', 'emerald'],
+  'updated-hoenn':      ['omega-ruby', 'alpha-sapphire'],
+  'original-sinnoh':    ['diamond', 'pearl', 'platinum'],
+  'updated-sinnoh':     ['brilliant-diamond', 'shining-pearl'],
+  'original-unova':     ['black', 'white'],
+  'updated-unova':      ['black-2', 'white-2'],
+  'kalos-central':      ['x', 'y'],
+  'kalos-coastal':      ['x', 'y'],
+  'kalos-mountain':     ['x', 'y'],
+  'original-alola':     ['sun', 'moon'],
+  'original-melemele':  ['sun', 'moon'],
+  'original-akala':     ['sun', 'moon'],
+  'original-ulaula':    ['sun', 'moon'],
+  'original-poni':      ['sun', 'moon'],
+  'updated-alola':      ['ultra-sun', 'ultra-moon'],
+  'updated-melemele':   ['ultra-sun', 'ultra-moon'],
+  'updated-akala':      ['ultra-sun', 'ultra-moon'],
+  'updated-ulaula':     ['ultra-sun', 'ultra-moon'],
+  'updated-poni':       ['ultra-sun', 'ultra-moon'],
+  'original-galar':     ['sword', 'shield'],
+  'galar':              ['sword', 'shield'],
+  'isle-of-armor':      ['sword', 'shield'],
+  'crown-tundra':       ['sword', 'shield'],
+  'hisui':              ['legends-arceus'],
+  'paldea':             ['scarlet', 'violet'],
+  'original-paldea':    ['scarlet', 'violet'],
+  'kitakami':           ['scarlet', 'violet'],
+  'blueberry':          ['scarlet', 'violet'],
+};
+
+function buildGameAppearances(
+  gameIndices: RawPokemon['game_indices'],
+  pokedexNames: string[],
+): GameAppearance[] {
+  const seen = new Set<string>();
+  const result: GameAppearance[] = [];
+
+  const addVersion = (versionName: string) => {
+    const meta = GAME_CATALOG[versionName];
+    if (!meta || seen.has(meta.title)) return;
+    seen.add(meta.title);
+    result.push({ versionName, ...meta });
+  };
+
+  for (const entry of gameIndices) {
+    if (entry.version?.name) addVersion(entry.version.name);
+  }
+
+  for (const pokedexName of pokedexNames) {
+    for (const versionName of POKEDEX_VERSIONS[pokedexName] ?? []) {
+      addVersion(versionName);
+    }
+  }
+
+  return result.sort((a, b) => a.year - b.year || a.generation - b.generation);
+}
+
 function extractImageUrl(raw: RawPokemon): string | null {
   return (
     raw.sprites.other['official-artwork'].front_default ??
@@ -356,7 +423,7 @@ export async function fetchPokemonByType(
 
 async function fetchSpeciesAndChain(
   raw: RawPokemon,
-): Promise<{ species: SpeciesInfo; evolutionChain: EvolutionNode | null }> {
+): Promise<{ species: SpeciesInfo; evolutionChain: EvolutionNode | null; pokedexNames: string[] }> {
   const speciesId = getIdFromUrl(raw.species.url);
   const speciesData = await fetcherSafe<RawSpecies>(
     `${BASE}/pokemon-species/${speciesId}`,
@@ -383,6 +450,8 @@ async function fetchSpeciesAndChain(
         generation: 'unknown',
       };
 
+  const pokedexNames = speciesData?.pokedex_numbers?.map(p => p.pokedex.name) ?? [];
+
   let evolutionChain: EvolutionNode | null = null;
   if (speciesData?.evolution_chain?.url) {
     const chainId = getIdFromUrl(speciesData.evolution_chain.url);
@@ -393,7 +462,7 @@ async function fetchSpeciesAndChain(
     if (chain) evolutionChain = mapEvolutionNode(chain.chain);
   }
 
-  return { species, evolutionChain };
+  return { species, evolutionChain, pokedexNames };
 }
 
 async function fetchVariants(raw: RawPokemon): Promise<PokemonVariant[]> {
@@ -445,7 +514,7 @@ export async function fetchPokemonDetail(
   const raw = await fetchRawPokemon(idOrName);
 
   // Species+chain and variants can be fetched in parallel
-  const [{ species, evolutionChain }, variants] = await Promise.all([
+  const [{ species, evolutionChain, pokedexNames }, variants] = await Promise.all([
     fetchSpeciesAndChain(raw),
     fetchVariants(raw),
   ]);
@@ -472,5 +541,6 @@ export async function fetchPokemonDetail(
     evolutionChain,
     variants,
     cryUrl: raw.cries?.latest ?? null,
+    gameAppearances: buildGameAppearances(raw.game_indices ?? [], pokedexNames),
   };
 }
