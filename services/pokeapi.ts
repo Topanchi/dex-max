@@ -248,7 +248,7 @@ const POKEDEX_VERSIONS: Record<string, string[]> = {
   'kitakami':           ['scarlet', 'violet'],
   'blueberry':          ['scarlet', 'violet'],
   'legends-za':         ['legends-za'],
-  'lumiose':            ['legends-za'],
+  'lumiose-city':       ['legends-za'],
 };
 
 function buildGameAppearances(
