@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <rect width="56" height="36" rx="6" fill="#aa1133"/>
+  <rect x="28" width="28" height="36" fill="#1133aa"/>
+  <line x1="28" y1="0" x2="28" y2="36" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+  <!-- ruby gem -->
+  <polygon points="14,10 19,16 14,26 9,16" fill="#ff6688" opacity="0.9"/>
+  <!-- sapphire gem -->
+  <polygon points="42,10 47,16 42,26 37,16" fill="#66aaff" opacity="0.9"/>
+</svg>

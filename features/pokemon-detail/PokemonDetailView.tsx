@@ -18,7 +18,6 @@ import {
   formatWeight,
 } from '@/utils/normalize';
 import { getTypeGradient } from '@/utils/typeColors';
-import { GEN_COLORS } from '@/lib/pokemonGames';
 import type { PokemonDetail } from '@/types/pokemon';
 
 const EEVEE_FAMILY = new Set([
@@ -329,19 +328,17 @@ export function PokemonDetailView({ pokemon }: Props) {
 
           {gameLocations && (
             <div className="flex flex-wrap gap-2">
-              {pokemon.gameAppearances.map(game => {
-                const colors = GEN_COLORS[game.generation] ?? GEN_COLORS[1];
-                return (
-                  <div
-                    key={game.title}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
-                                border border-white/10 ${colors.bg} ${colors.text}`}
-                  >
-                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${colors.dot}`} />
-                    {game.title}
-                  </div>
-                );
-              })}
+              {pokemon.gameAppearances.map(game => game.image && (
+                <img
+                  key={game.title}
+                  src={game.image}
+                  alt={game.title}
+                  title={game.title}
+                  width={76}
+                  height={56}
+                  className="object-contain rounded-lg"
+                />
+              ))}
             </div>
           )}
         </section>
