@@ -1,4 +1,4 @@
-import { getTypeColor } from '@/utils/typeColors';
+import { getTypeColor, getTypeLabel } from '@/utils/typeColors';
 
 interface TypeBadgeProps {
   type: string;
@@ -11,10 +11,10 @@ export function TypeBadge({ type, size = 'md' }: TypeBadgeProps) {
 
   return (
     <span
-      className={`inline-block rounded-full capitalize ${bg} ${text} ${sizeClass}`}
+      className={`inline-block rounded-full ${bg} ${text} ${sizeClass}`}
       title={type}
     >
-      {type}
+      {getTypeLabel(type)}
     </span>
   );
 }

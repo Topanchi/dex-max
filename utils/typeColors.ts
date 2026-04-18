@@ -30,10 +30,35 @@ export const TYPE_COLORS: Record<string, TypeColor> = {
 
 export const ALL_TYPES = Object.keys(TYPE_COLORS) as string[];
 
+export const TYPE_ES: Record<string, string> = {
+  normal:   'Normal',
+  fire:     'Fuego',
+  water:    'Agua',
+  electric: 'Eléctrico',
+  grass:    'Planta',
+  ice:      'Hielo',
+  fighting: 'Lucha',
+  poison:   'Veneno',
+  ground:   'Tierra',
+  flying:   'Volador',
+  psychic:  'Psíquico',
+  bug:      'Bicho',
+  rock:     'Roca',
+  ghost:    'Fantasma',
+  dragon:   'Dragón',
+  dark:     'Siniestro',
+  steel:    'Acero',
+  fairy:    'Hada',
+};
+
 const FALLBACK: TypeColor = { bg: 'bg-gray-500', text: 'text-white', hex: '#A8A878' };
 
 export function getTypeColor(type: string): TypeColor {
   return TYPE_COLORS[type] ?? FALLBACK;
+}
+
+export function getTypeLabel(type: string): string {
+  return TYPE_ES[type] ?? type;
 }
 
 /** Returns a CSS gradient for the first (or first two) types of a Pokemon */
