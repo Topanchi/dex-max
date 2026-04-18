@@ -265,9 +265,11 @@ export interface RawMoveDetail {
 export interface GameAppearance {
   versionName: string;
   title: string;
+  titleEs: string;
   year: number;
   generation: number;
   region: string;
+  image?: string;
 }
 
 export interface PokemonDetail {

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">
+  <rect width="56" height="36" rx="6" fill="#cc3300"/>
+  <rect x="28" width="28" height="36" fill="#228833"/>
+  <line x1="28" y1="0" x2="28" y2="36" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+  <!-- flame -->
+  <path d="M14,26 C10,20 12,14 14,10 C16,14 18,16 15,20 C18,18 19,14 18,10 C21,14 20,22 14,26Z" fill="#ffaa00" opacity="0.95"/>
+  <!-- leaf -->
+  <path d="M42,10 C48,14 48,24 42,28 C42,28 36,22 38,16 C40,18 42,20 42,24 C44,20 44,14 42,10Z" fill="#88ee44" opacity="0.95"/>
+</svg>
