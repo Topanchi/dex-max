@@ -247,6 +247,8 @@ const POKEDEX_VERSIONS: Record<string, string[]> = {
   'original-paldea':    ['scarlet', 'violet'],
   'kitakami':           ['scarlet', 'violet'],
   'blueberry':          ['scarlet', 'violet'],
+  'legends-za':         ['legends-za'],
+  'lumiose':            ['legends-za'],
 };
 
 function buildGameAppearances(
@@ -304,6 +306,7 @@ const VERSION_GROUP_META: Record<string, { label: string; generation: number }> 
   'scarlet-violet':                      { label: 'Escarlata/Violeta',    generation: 9 },
   'the-teal-mask':                       { label: 'Máscara Turquesa',     generation: 9 },
   'the-indigo-disk':                     { label: 'Disco Índigo',         generation: 9 },
+  'legends-za':                          { label: 'Leyendas: Z-A',        generation: 10 },
 };
 
 const VG_ORDER = Object.keys(VERSION_GROUP_META);
