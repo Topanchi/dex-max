@@ -10,6 +10,7 @@ import { EvolutionChainView } from './EvolutionChainView';
 import { FormsSection } from './FormsSection';
 import { TCGSection } from './TCGSection';
 import { TCGPocketSection } from './TCGPocketSection';
+import { MovesSection } from './MovesSection';
 import {
   normalizePokemonName,
   formatPokedexNumber,
@@ -39,6 +40,7 @@ interface Props {
 export function PokemonDetailView({ pokemon }: Props) {
   const [spriteGallery, setSpriteGallery] = useState(false);
   const [gameLocations, setGameLocations] = useState(false);
+  const [movesOpen, setMovesOpen] = useState(false);
   const isEeveeFamily = EEVEE_FAMILY.has(pokemon.id);
 
   const displayName = normalizePokemonName(pokemon.name);
@@ -342,6 +344,32 @@ export function PokemonDetailView({ pokemon }: Props) {
               })}
             </div>
           )}
+        </section>
+      )}
+
+      {/* ─── Moves ───────────────────────────────────────────────────────── */}
+      {pokemon.moves.length > 0 && (
+        <section aria-label="Movimientos">
+          <button
+            onClick={() => setMovesOpen(v => !v)}
+            className="flex items-center gap-2 w-full text-left mb-3 sm:mb-4
+                       focus:outline-none focus:ring-2 focus:ring-white/30 rounded
+                       touch-manipulation group"
+            aria-expanded={movesOpen}
+          >
+            <h2 className="text-base sm:text-lg font-bold text-white">Movimientos</h2>
+            <svg
+              className={`w-4 h-4 text-slate-400 group-hover:text-white transition-all flex-shrink-0
+                          ${movesOpen ? 'rotate-90' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {movesOpen && <MovesSection moves={pokemon.moves} />}
         </section>
       )}
 

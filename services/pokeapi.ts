@@ -26,6 +26,8 @@ import type {
   PokemonNameEntry,
   SpeciesInfo,
   GameAppearance,
+  VersionGroupMoves,
+  RawMoveDetail,
 } from '@/types/pokemon';
 
 const BASE = 'https://pokeapi.co/api/v2';
@@ -261,6 +263,123 @@ function buildGameAppearances(
   }
 
   return result.sort((a, b) => a.year - b.year || a.generation - b.generation);
+}
+
+// ─── Move processing ─────────────────────────────────────────────────────────
+
+const VERSION_GROUP_META: Record<string, { label: string; generation: number }> = {
+  'red-blue':                            { label: 'Rojo/Azul',           generation: 1 },
+  'yellow':                              { label: 'Amarillo',             generation: 1 },
+  'gold-silver':                         { label: 'Oro/Plata',            generation: 2 },
+  'crystal':                             { label: 'Cristal',              generation: 2 },
+  'ruby-sapphire':                       { label: 'Rubí/Zafiro',          generation: 3 },
+  'emerald':                             { label: 'Esmeralda',            generation: 3 },
+  'firered-leafgreen':                   { label: 'RJ/VH',                generation: 3 },
+  'diamond-pearl':                       { label: 'Diamante/Perla',       generation: 4 },
+  'platinum':                            { label: 'Platino',              generation: 4 },
+  'heartgold-soulsilver':                { label: 'OHG/PA',               generation: 4 },
+  'black-white':                         { label: 'Negro/Blanco',         generation: 5 },
+  'black-2-white-2':                     { label: 'Negro 2/Blanco 2',     generation: 5 },
+  'x-y':                                 { label: 'X/Y',                  generation: 6 },
+  'omega-ruby-alpha-sapphire':           { label: 'OR/AS',                generation: 6 },
+  'sun-moon':                            { label: 'Sol/Luna',             generation: 7 },
+  'ultra-sun-ultra-moon':                { label: 'UltraSol/UltraLuna',  generation: 7 },
+  'lets-go-pikachu-lets-go-eevee':       { label: "Let's Go",             generation: 7 },
+  'sword-shield':                        { label: 'Espada/Escudo',        generation: 8 },
+  'the-isle-of-armor':                   { label: 'Isla Armadura',        generation: 8 },
+  'the-crown-tundra':                    { label: 'Tierra Corona',        generation: 8 },
+  'brilliant-diamond-and-shining-pearl': { label: 'BD/SP',                generation: 8 },
+  'legends-arceus':                      { label: 'Leyendas: Arceus',     generation: 8 },
+  'scarlet-violet':                      { label: 'Escarlata/Violeta',    generation: 9 },
+  'the-teal-mask':                       { label: 'Máscara Turquesa',     generation: 9 },
+  'the-indigo-disk':                     { label: 'Disco Índigo',         generation: 9 },
+};
+
+const VG_ORDER = Object.keys(VERSION_GROUP_META);
+
+function formatMoveName(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+type MoveDetailMap = Map<string, { type: string; damageClass: string; displayName: string }>;
+
+async function fetchAllMoveDetails(rawMoves: RawPokemon['moves']): Promise<MoveDetailMap> {
+  const unique = new Map(rawMoves.map(m => [m.move.name, m.move.url]));
+  const results = await Promise.all(
+    Array.from(unique.entries()).map(async ([name, url]) => {
+      const detail = await fetcherSafe<RawMoveDetail>(url, { revalidate: REVALIDATE });
+      return [name, detail] as const;
+    }),
+  );
+  const map: MoveDetailMap = new Map();
+  for (const [name, detail] of results) {
+    if (detail) {
+      const esName = detail.names.find(n => n.language.name === 'es')?.name
+        ?? detail.names.find(n => n.language.name === 'en')?.name
+        ?? formatMoveName(name);
+      map.set(name, {
+        type: detail.type.name,
+        damageClass: detail.damage_class?.name ?? 'status',
+        displayName: esName,
+      });
+    }
+  }
+  return map;
+}
+
+function processMoves(rawMoves: RawPokemon['moves'], detailMap: MoveDetailMap): VersionGroupMoves[] {
+  const groups = new Map<string, {
+    levelUp: Map<string, number>;
+    machine: Set<string>;
+  }>();
+
+  for (const moveEntry of rawMoves) {
+    const slug = moveEntry.move.name;
+    for (const detail of moveEntry.version_group_details) {
+      const vg = detail.version_group.name;
+      if (!VERSION_GROUP_META[vg]) continue;
+
+      if (!groups.has(vg)) groups.set(vg, { levelUp: new Map(), machine: new Set() });
+      const group = groups.get(vg)!;
+      const method = detail.move_learn_method.name;
+
+      if (method === 'level-up') {
+        group.levelUp.set(slug, detail.level_learned_at);
+      } else if (method === 'machine') {
+        group.machine.add(slug);
+      }
+    }
+  }
+
+  const getMoveInfo = (slug: string) => {
+    const d = detailMap.get(slug);
+    return {
+      displayName: d?.displayName ?? formatMoveName(slug),
+      type: d?.type ?? 'normal',
+      damageClass: d?.damageClass ?? 'status',
+    };
+  };
+
+  const result: VersionGroupMoves[] = [];
+  for (const [vg, data] of groups) {
+    const meta = VERSION_GROUP_META[vg]!;
+    result.push({
+      versionGroup: vg,
+      label: meta.label,
+      generation: meta.generation,
+      levelUp: Array.from(data.levelUp.entries())
+        .map(([slug, level]) => ({ slug, level, ...getMoveInfo(slug) }))
+        .sort((a, b) => a.level - b.level || a.displayName.localeCompare(b.displayName)),
+      machine: Array.from(data.machine)
+        .map(slug => ({ slug, ...getMoveInfo(slug) }))
+        .sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    });
+  }
+
+  return result.sort((a, b) => {
+    if (a.generation !== b.generation) return a.generation - b.generation;
+    return VG_ORDER.indexOf(a.versionGroup) - VG_ORDER.indexOf(b.versionGroup);
+  });
 }
 
 function extractImageUrl(raw: RawPokemon): string | null {
@@ -513,10 +632,10 @@ export async function fetchPokemonDetail(
 ): Promise<PokemonDetail> {
   const raw = await fetchRawPokemon(idOrName);
 
-  // Species+chain and variants can be fetched in parallel
-  const [{ species, evolutionChain, pokedexNames }, variants] = await Promise.all([
+  const [{ species, evolutionChain, pokedexNames }, variants, moveDetailMap] = await Promise.all([
     fetchSpeciesAndChain(raw),
     fetchVariants(raw),
+    fetchAllMoveDetails(raw.moves ?? []),
   ]);
 
   return {
@@ -542,5 +661,6 @@ export async function fetchPokemonDetail(
     variants,
     cryUrl: raw.cries?.latest ?? null,
     gameAppearances: buildGameAppearances(raw.game_indices ?? [], pokedexNames),
+    moves: processMoves(raw.moves ?? [], moveDetailMap),
   };
 }
