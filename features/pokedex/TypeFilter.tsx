@@ -1,6 +1,6 @@
 'use client';
 
-import { ALL_TYPES, getTypeColor } from '@/utils/typeColors';
+import { ALL_TYPES, getTypeColor, getTypeLabel } from '@/utils/typeColors';
 
 interface TypeFilterProps {
   selected: string[];
@@ -33,18 +33,18 @@ export function TypeFilter({ selected, onChange }: TypeFilterProps) {
             <button
               key={type}
               onClick={() => toggle(type)}
-              /* min-h-[36px] garantiza área táctil mínima recomendada (44px ideal, 36px aceptable) */
-              className={`px-3 py-1.5 min-h-[36px] rounded-full text-xs font-semibold capitalize
+              className={`px-3 py-1.5 min-h-[36px] rounded-full text-xs font-semibold
                           transition-all border-2 touch-manipulation
                           focus:outline-none focus:ring-2 focus:ring-white/30
+                          ${bg} ${text}
                           ${isSelected
-                            ? `${bg} ${text} border-white/40 scale-105`
-                            : 'bg-transparent text-slate-400 border-[#2a2a4e] hover:border-slate-400'
+                            ? 'border-white/50 scale-105 opacity-100'
+                            : 'border-transparent opacity-50 hover:opacity-80'
                           }`}
               aria-pressed={isSelected}
-              aria-label={`Tipo ${type}`}
+              aria-label={`Tipo ${getTypeLabel(type)}`}
             >
-              {type}
+              {getTypeLabel(type)}
             </button>
           );
         })}
