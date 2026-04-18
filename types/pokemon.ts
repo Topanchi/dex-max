@@ -87,6 +87,15 @@ export interface RawPokemon {
     latest: string | null;
     legacy: string | null;
   } | null;
+  game_indices: Array<{ game_index: number; version: { name: string; url: string } }>;
+  moves: Array<{
+    move: { name: string; url: string };
+    version_group_details: Array<{
+      level_learned_at: number;
+      move_learn_method: { name: string; url: string };
+      version_group: { name: string; url: string };
+    }>;
+  }>;
 }
 
 export interface RawFlavorText {
@@ -113,6 +122,7 @@ export interface RawSpecies {
   color: { name: string };
   shape: { name: string } | null;
   generation: { name: string };
+  pokedex_numbers: Array<{ entry_number: number; pokedex: { name: string; url: string } }>;
 }
 
 export interface RawEvolutionDetail {
@@ -229,6 +239,37 @@ export interface SpeciesInfo {
   generation: string;
 }
 
+export interface MoveInfo {
+  slug: string;
+  displayName: string;
+  type: string;
+  damageClass: string;
+}
+
+export interface VersionGroupMoves {
+  versionGroup: string;
+  label: string;
+  generation: number;
+  levelUp: Array<MoveInfo & { level: number }>;
+  machine: MoveInfo[];
+}
+
+export interface RawMoveDetail {
+  id: number;
+  name: string;
+  type: { name: string; url: string };
+  damage_class: { name: string; url: string } | null;
+  names: Array<{ name: string; language: { name: string } }>;
+}
+
+export interface GameAppearance {
+  versionName: string;
+  title: string;
+  year: number;
+  generation: number;
+  region: string;
+}
+
 export interface PokemonDetail {
   id: number;
   name: string;
@@ -242,6 +283,8 @@ export interface PokemonDetail {
   evolutionChain: EvolutionNode | null;
   variants: PokemonVariant[];
   cryUrl: string | null;
+  gameAppearances: GameAppearance[];
+  moves: VersionGroupMoves[];
 }
 
 export interface PokemonListPageResult {
