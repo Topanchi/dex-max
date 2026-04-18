@@ -329,15 +329,18 @@ export function PokemonDetailView({ pokemon }: Props) {
           {gameLocations && (
             <div className="flex flex-wrap gap-2">
               {pokemon.gameAppearances.map(game => game.image && (
-                <img
-                  key={game.title}
-                  src={game.image}
-                  alt={game.title}
-                  title={game.title}
-                  width={76}
-                  height={56}
-                  className="object-contain rounded-lg"
-                />
+                <div key={game.title} className="flex flex-col items-center gap-1">
+                  <img
+                    src={game.image}
+                    alt={game.titleEs}
+                    width={76}
+                    height={56}
+                    className="object-contain rounded-lg"
+                  />
+                  <span className="text-[10px] text-slate-400 text-center leading-tight max-w-[64px]">
+                    {game.titleEs}
+                  </span>
+                </div>
               ))}
             </div>
           )}
