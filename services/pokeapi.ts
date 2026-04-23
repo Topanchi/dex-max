@@ -238,6 +238,7 @@ const POKEDEX_VERSIONS: Record<string, string[]> = {
   'updated-akala':      ['ultra-sun', 'ultra-moon'],
   'updated-ulaula':     ['ultra-sun', 'ultra-moon'],
   'updated-poni':       ['ultra-sun', 'ultra-moon'],
+  'letsgo-kanto':       ['lets-go-pikachu', 'lets-go-eevee'],
   'original-galar':     ['sword', 'shield'],
   'galar':              ['sword', 'shield'],
   'isle-of-armor':      ['sword', 'shield'],
