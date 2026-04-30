@@ -5,6 +5,8 @@ import { PokemonCard } from './PokemonCard';
 import { SearchBar } from './SearchBar';
 import { TypeFilter } from './TypeFilter';
 import { GenerationFilter, GENERATIONS } from './GenerationFilter';
+import { GameFilter } from './GameFilter';
+import { GAME_FILTERS } from '@/lib/pokemonGames';
 import { SortControls, type SortOption } from './SortControls';
 import { PokemonCardSkeleton } from '@/components/ui/Skeleton';
 import { getOfficialArtworkUrl } from '@/utils/sprites';
@@ -26,8 +28,8 @@ function sortPokemon(list: PokemonBasic[], sort: SortOption): PokemonBasic[] {
 }
 
 // Encodes active filters into a string key for change detection
-function filterKey(type: string | null, generation: number | null): string {
-  return `t:${type ?? ''}|g:${generation ?? ''}`;
+function filterKey(type: string | null, generation: number | null, game: string | null): string {
+  return `t:${type ?? ''}|g:${generation ?? ''}|gm:${game ?? ''}`;
 }
 
 export function PokedexClient({ initialPage }: Props) {
@@ -41,10 +43,11 @@ export function PokedexClient({ initialPage }: Props) {
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedGeneration, setSelectedGeneration] = useState<number | null>(null);
+  const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('number-asc');
 
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const activeFilterKey = useRef<string>(filterKey(null, null));
+  const activeFilterKey = useRef<string>(filterKey(null, null, null));
 
   // Fetch all names once for client-side search
   useEffect(() => {
@@ -55,11 +58,12 @@ export function PokedexClient({ initialPage }: Props) {
   }, []);
 
   const fetchPage = useCallback(
-    async (pageNum: number, reset: boolean, type: string | null, generation: number | null) => {
+    async (pageNum: number, reset: boolean, type: string | null, generation: number | null, game: string | null) => {
       setLoading(true);
       try {
         const params = new URLSearchParams({ page: String(pageNum), limit: '20' });
-        if (generation) params.set('generation', String(generation));
+        if (game) params.set('game', game);
+        else if (generation) params.set('generation', String(generation));
         else if (type) params.set('type', type);
 
         const res = await fetch(`/api/pokemon?${params}`);
@@ -77,26 +81,34 @@ export function PokedexClient({ initialPage }: Props) {
     [],
   );
 
-  // When type or generation changes: generation and type are mutually exclusive
+  // All three filters are mutually exclusive
   const handleTypeChange = (types: string[]) => {
     const t = types[0] ?? null;
     setSelectedType(t);
-    setSelectedGeneration(null); // clear generation
+    setSelectedGeneration(null);
+    setSelectedGame(null);
   };
 
   const handleGenerationChange = (id: number | null) => {
     setSelectedGeneration(id);
-    setSelectedType(null); // clear type
+    setSelectedType(null);
+    setSelectedGame(null);
+  };
+
+  const handleGameChange = (key: string | null) => {
+    setSelectedGame(key);
+    setSelectedType(null);
+    setSelectedGeneration(null);
   };
 
   // Re-fetch when any filter changes
   useEffect(() => {
-    const key = filterKey(selectedType, selectedGeneration);
+    const key = filterKey(selectedType, selectedGeneration, selectedGame);
     if (key === activeFilterKey.current) return;
     activeFilterKey.current = key;
     setPage(0);
-    fetchPage(0, true, selectedType, selectedGeneration);
-  }, [selectedType, selectedGeneration, fetchPage]);
+    fetchPage(0, true, selectedType, selectedGeneration, selectedGame);
+  }, [selectedType, selectedGeneration, selectedGame, fetchPage]);
 
   // Infinite scroll sentinel
   useEffect(() => {
@@ -107,14 +119,14 @@ export function PokedexClient({ initialPage }: Props) {
         if (entries[0].isIntersecting && hasMore && !loading && !search) {
           const next = page + 1;
           setPage(next);
-          fetchPage(next, false, selectedType, selectedGeneration);
+          fetchPage(next, false, selectedType, selectedGeneration, selectedGame);
         }
       },
       { rootMargin: '400px' },
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, loading, page, search, selectedType, selectedGeneration, fetchPage]);
+  }, [hasMore, loading, page, search, selectedType, selectedGeneration, selectedGame, fetchPage]);
 
   // ─── Derived display list ─────────────────────────────────────────────────
   const displayList: PokemonBasic[] = (() => {
@@ -138,6 +150,10 @@ export function PokedexClient({ initialPage }: Props) {
 
   // Active filter label for the counter
   const activeFilterLabel = (() => {
+    if (selectedGame) {
+      const game = GAME_FILTERS.find(g => g.key === selectedGame);
+      return game ? game.titleEs : null;
+    }
     if (selectedGeneration) {
       const gen = GENERATIONS.find(g => g.id === selectedGeneration);
       return gen ? `Gen ${gen.roman} – ${gen.region}` : null;
@@ -157,6 +173,7 @@ export function PokedexClient({ initialPage }: Props) {
       {!isSearchMode && (
         <>
           <GenerationFilter selected={selectedGeneration} onChange={handleGenerationChange} />
+          <GameFilter selected={selectedGame} onChange={handleGameChange} />
           <TypeFilter
             selected={selectedType ? [selectedType] : []}
             onChange={handleTypeChange}
