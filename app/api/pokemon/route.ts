@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchPokemonPage, fetchPokemonByType, fetchPokemonByGeneration } from '@/services/pokeapi';
+import { fetchPokemonPage, fetchPokemonByType, fetchPokemonByGeneration, fetchPokemonByGame } from '@/services/pokeapi';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,10 +9,13 @@ export async function GET(request: NextRequest) {
   const limit      = Math.min(40, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)));
   const type       = searchParams.get('type');
   const generation = searchParams.get('generation');
+  const game       = searchParams.get('game');
   const offset     = page * limit;
 
   try {
-    const data = generation
+    const data = game
+      ? await fetchPokemonByGame(game, offset, limit)
+      : generation
       ? await fetchPokemonByGeneration(parseInt(generation, 10), offset, limit)
       : type
       ? await fetchPokemonByType(type, offset, limit)

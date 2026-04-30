@@ -5,7 +5,7 @@ import {
   normalizeFormDisplayName,
 } from '@/utils/normalize';
 import { getOfficialArtworkUrl, getOfficialShinyUrl } from '@/utils/sprites';
-import { GAME_CATALOG } from '@/lib/pokemonGames';
+import { GAME_CATALOG, GAME_FILTERS } from '@/lib/pokemonGames';
 import type {
   RawPokemon,
   RawSprites,
@@ -487,6 +487,70 @@ export async function fetchPokemonByGeneration(
   const allSpecies = genData.pokemon_species
     .map(s => ({ name: s.name, id: getIdFromUrl(s.url) }))
     .sort((a, b) => a.id - b.id);
+
+  const total = allSpecies.length;
+  const pageSpecies = allSpecies.slice(offset, offset + limit);
+
+  const pokemon = await Promise.all(
+    pageSpecies.map(species =>
+      fetcherSafe<RawPokemon>(`${BASE}/pokemon/${species.id}`, { revalidate: REVALIDATE }).then(
+        raw =>
+          raw
+            ? ({
+                id: raw.id,
+                name: raw.name,
+                types: raw.types.map(t => t.type.name),
+                imageUrl: extractImageUrl(raw),
+                shinyImageUrl: raw.sprites.other['official-artwork'].front_shiny ?? null,
+              } satisfies PokemonBasic)
+            : null,
+      ),
+    ),
+  );
+
+  return {
+    pokemon: pokemon.filter((p): p is PokemonBasic => p !== null),
+    total,
+    hasMore: offset + limit < total,
+  };
+}
+
+export async function fetchPokemonByGame(
+  gameKey: string,
+  offset: number,
+  limit: number,
+): Promise<PokemonListPageResult> {
+  const gameFilter = GAME_FILTERS.find(g => g.key === gameKey);
+  if (!gameFilter) return { pokemon: [], total: 0, hasMore: false };
+
+  type PokedexEntry = {
+    pokemon_entries: Array<{
+      entry_number: number;
+      pokemon_species: { name: string; url: string };
+    }>;
+  };
+
+  const pokedexResults = await Promise.all(
+    gameFilter.pokedexNames.map(name =>
+      fetcherSafe<PokedexEntry>(`${BASE}/pokedex/${name}`, { revalidate: REVALIDATE }),
+    ),
+  );
+
+  const seen = new Set<number>();
+  const allSpecies: Array<{ name: string; id: number }> = [];
+
+  for (const dex of pokedexResults) {
+    if (!dex) continue;
+    for (const entry of dex.pokemon_entries) {
+      const id = getIdFromUrl(entry.pokemon_species.url);
+      if (!seen.has(id)) {
+        seen.add(id);
+        allSpecies.push({ name: entry.pokemon_species.name, id });
+      }
+    }
+  }
+
+  allSpecies.sort((a, b) => a.id - b.id);
 
   const total = allSpecies.length;
   const pageSpecies = allSpecies.slice(offset, offset + limit);

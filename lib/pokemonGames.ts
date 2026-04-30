@@ -59,6 +59,41 @@ export const GAME_CATALOG: Record<string, GameMeta> = {
   'legends-za':      { title: 'Legends: Z-A',                     titleEs: 'Leyendas: Z-A',                 year: 2025, generation: 10, region: 'Kalos',   image: '/games/legends-za.png' },
 };
 
+export interface GameFilter {
+  key: string;
+  titleEs: string;
+  shortEs: string;
+  generation: number;
+  pokedexNames: string[];
+}
+
+export const GAME_FILTERS: GameFilter[] = [
+  { key: 'rojo-azul',         titleEs: 'Rojo / Azul',                          shortEs: 'Rojo/Azul',         generation: 1, pokedexNames: ['kanto'] },
+  { key: 'oro-plata',         titleEs: 'Oro / Plata',                           shortEs: 'Oro/Plata',         generation: 2, pokedexNames: ['original-johto'] },
+  { key: 'rubi-zafiro',       titleEs: 'Rubí / Zafiro',                         shortEs: 'Rubí/Zafiro',       generation: 3, pokedexNames: ['hoenn'] },
+  { key: 'rf-vh',             titleEs: 'Rojo Fuego / Verde Hoja',               shortEs: 'RF/VH',             generation: 3, pokedexNames: ['kanto'] },
+  { key: 'diamante-perla',    titleEs: 'Diamante / Perla',                      shortEs: 'Diamante/Perla',    generation: 4, pokedexNames: ['original-sinnoh'] },
+  { key: 'platino',           titleEs: 'Platino',                               shortEs: 'Platino',           generation: 4, pokedexNames: ['extended-sinnoh'] },
+  { key: 'hgss',              titleEs: 'HeartGold / SoulSilver',                shortEs: 'HG/SS',             generation: 4, pokedexNames: ['updated-johto'] },
+  { key: 'negro-blanco',      titleEs: 'Negro / Blanco',                        shortEs: 'Negro/Blanco',      generation: 5, pokedexNames: ['original-unova'] },
+  { key: 'n2-b2',             titleEs: 'Negro 2 / Blanco 2',                    shortEs: 'N2/B2',             generation: 5, pokedexNames: ['updated-unova'] },
+  { key: 'x-y',               titleEs: 'X / Y',                                 shortEs: 'X/Y',               generation: 6, pokedexNames: ['kalos-central', 'kalos-coastal', 'kalos-mountain'] },
+  { key: 'oras',              titleEs: 'Rubí Omega / Zafiro Alfa',              shortEs: 'OR/AS',             generation: 6, pokedexNames: ['updated-hoenn'] },
+  { key: 'sol-luna',          titleEs: 'Sol / Luna',                            shortEs: 'Sol/Luna',          generation: 7, pokedexNames: ['original-alola'] },
+  { key: 'usum',              titleEs: 'Ultrasol / Ultraluna',                  shortEs: 'Ultra Sol/Luna',    generation: 7, pokedexNames: ['updated-alola'] },
+  { key: 'lgpe',              titleEs: "Let's Go Pikachu / Eevee",              shortEs: "Let's Go",          generation: 7, pokedexNames: ['letsgo-kanto'] },
+  { key: 'espada-escudo',     titleEs: 'Espada / Escudo',                       shortEs: 'Espada/Escudo',     generation: 8, pokedexNames: ['galar'] },
+  { key: 'isla-armadura',     titleEs: 'Espada/Escudo – Isla de la Armadura',   shortEs: 'Isla Armadura',     generation: 8, pokedexNames: ['isle-of-armor'] },
+  { key: 'corona-nivea',      titleEs: 'Espada/Escudo – La Corona Nívea',       shortEs: 'Corona Nívea',      generation: 8, pokedexNames: ['crown-tundra'] },
+  { key: 'bdsp',              titleEs: 'Diamante Brillante / Perla Reluciente', shortEs: 'DB/PR',             generation: 8, pokedexNames: ['updated-sinnoh'] },
+  { key: 'leyendas-arceus',   titleEs: 'Leyendas: Arceus',                      shortEs: 'Ley. Arceus',       generation: 8, pokedexNames: ['hisui'] },
+  { key: 'escarlata-violeta', titleEs: 'Escarlata / Violeta',                   shortEs: 'Escarlata/Violeta', generation: 9, pokedexNames: ['paldea'] },
+  { key: 'mascara-teal',      titleEs: 'Escarlata/Violeta – La Máscara Teal',   shortEs: 'Máscara Teal',      generation: 9, pokedexNames: ['kitakami'] },
+  { key: 'disco-indigo',      titleEs: 'Escarlata/Violeta – El Disco Índigo',   shortEs: 'Disco Índigo',      generation: 9, pokedexNames: ['blueberry'] },
+  { key: 'leyendas-za',       titleEs: 'Leyendas: Z-A',                         shortEs: 'Leyendas: Z-A',     generation: 10, pokedexNames: ['legends-za'] },
+  { key: 'megadimension',     titleEs: 'Leyendas: Z-A – Megadimensión',         shortEs: 'Megadimensión',     generation: 10, pokedexNames: ['megadimension'] },
+];
+
 export const GEN_COLORS: Record<number, { text: string; bg: string; dot: string }> = {
   1:  { text: 'text-red-400',    bg: 'bg-red-500/15',    dot: 'bg-red-400' },
   2:  { text: 'text-yellow-400', bg: 'bg-yellow-500/15', dot: 'bg-yellow-400' },
