@@ -83,9 +83,15 @@ export const GAME_FILTERS: GameFilter[] = [
   { key: 'usum',              titleEs: 'Ultrasol / Ultraluna',                  shortEs: 'Ultra Sol/Luna',    generation: 7, pokedexNames: ['updated-alola'] },
   { key: 'lgpe',              titleEs: "Let's Go Pikachu / Eevee",              shortEs: "Let's Go",          generation: 7, pokedexNames: ['letsgo-kanto'] },
   { key: 'espada-escudo',     titleEs: 'Espada / Escudo',                       shortEs: 'Espada/Escudo',     generation: 8, pokedexNames: ['galar'] },
+  { key: 'isla-armadura',     titleEs: 'Espada/Escudo – Isla de la Armadura',   shortEs: 'Isla Armadura',     generation: 8, pokedexNames: ['isle-of-armor'] },
+  { key: 'corona-nivea',      titleEs: 'Espada/Escudo – La Corona Nívea',       shortEs: 'Corona Nívea',      generation: 8, pokedexNames: ['crown-tundra'] },
   { key: 'bdsp',              titleEs: 'Diamante Brillante / Perla Reluciente', shortEs: 'DB/PR',             generation: 8, pokedexNames: ['updated-sinnoh'] },
   { key: 'leyendas-arceus',   titleEs: 'Leyendas: Arceus',                      shortEs: 'Ley. Arceus',       generation: 8, pokedexNames: ['hisui'] },
   { key: 'escarlata-violeta', titleEs: 'Escarlata / Violeta',                   shortEs: 'Escarlata/Violeta', generation: 9, pokedexNames: ['paldea'] },
+  { key: 'mascara-teal',      titleEs: 'Escarlata/Violeta – La Máscara Teal',   shortEs: 'Máscara Teal',      generation: 9, pokedexNames: ['kitakami'] },
+  { key: 'disco-indigo',      titleEs: 'Escarlata/Violeta – El Disco Índigo',   shortEs: 'Disco Índigo',      generation: 9, pokedexNames: ['blueberry'] },
+  { key: 'leyendas-za',       titleEs: 'Leyendas: Z-A',                         shortEs: 'Leyendas: Z-A',     generation: 10, pokedexNames: ['legends-za'] },
+  { key: 'megadimension',     titleEs: 'Leyendas: Z-A – Megadimensión',         shortEs: 'Megadimensión',     generation: 10, pokedexNames: ['megadimension'] },
 ];
 
 export const GEN_COLORS: Record<number, { text: string; bg: string; dot: string }> = {
