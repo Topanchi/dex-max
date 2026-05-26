@@ -49,6 +49,8 @@ export const GAME_CATALOG: Record<string, GameMeta> = {
   // Gen VIII
   sword:             { title: 'Sword / Shield',                   titleEs: 'Espada / Escudo',               year: 2019, generation: 8,  region: 'Galar',   image: '/games/sword-shield.png' },
   shield:            { title: 'Sword / Shield',                   titleEs: 'Espada / Escudo',               year: 2019, generation: 8,  region: 'Galar',   image: '/games/sword-shield.png' },
+  'isle-of-armor':   { title: 'Sword / Shield – Isle of Armor',   titleEs: 'Espada/Escudo – Isla Armadura', year: 2020, generation: 8,  region: 'Galar',   image: '/games/isle-of-armor.png' },
+  'crown-tundra':    { title: 'Sword / Shield – Crown Tundra',    titleEs: 'Espada/Escudo – Corona Nívea',  year: 2020, generation: 8,  region: 'Galar',   image: '/games/crown-tundra.png' },
   'brilliant-diamond': { title: 'Brilliant Diamond / Shining Pearl', titleEs: 'Diamante Brillante / Perla Reluciente', year: 2021, generation: 8, region: 'Sinnoh', image: '/games/bdsp.png' },
   'shining-pearl':   { title: 'Brilliant Diamond / Shining Pearl', titleEs: 'Diamante Brillante / Perla Reluciente', year: 2021, generation: 8, region: 'Sinnoh', image: '/games/bdsp.png' },
   'legends-arceus':  { title: 'Legends: Arceus',                  titleEs: 'Leyendas: Arceus',              year: 2022, generation: 8,  region: 'Hisui',   image: '/games/legends-arceus.png' },
