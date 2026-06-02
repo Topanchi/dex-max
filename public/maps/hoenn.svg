@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+<rect width="600" height="600" fill="#071421"/>
+<!-- main land -->
+<polygon points="48,80 440,80 490,120 530,200 540,360 500,440 440,490 360,510 280,510 200,500 100,480 60,420 40,340 40,200 48,80" fill="#1b2d3f"/>
+<!-- southern water routes area -->
+<polygon points="280,510 440,510 440,560 350,560 260,550 240,540 250,520 280,510" fill="#1b2d3f" opacity="0.6"/>
+<!-- ever grande peninsula -->
+<ellipse cx="528" cy="432" rx="30" ry="26" fill="#1b2d3f"/>
+<!-- mt chimney zone -->
+<ellipse cx="228" cy="270" rx="36" ry="30" fill="#182535"/>
+<!-- seafloor cavern / sootopolis zone -->
+<ellipse cx="444" cy="390" rx="28" ry="22" fill="#182535"/>
+<!-- granite cave -->
+<ellipse cx="102" cy="498" rx="22" ry="16" fill="#182535"/>
+<!-- meteor falls zone -->
+<ellipse cx="162" cy="222" rx="26" ry="20" fill="#182535"/>
+<!-- petalburg woods -->
+<rect x="90" y="320" width="38" height="48" rx="6" fill="#14251c"/>
+<!-- mt chimney peaks -->
+<g fill="#1e3548"><polygon points="210,280 228,255 246,280"/><polygon points="226,280 244,255 262,280"/></g>
+<!-- meteor falls peaks -->
+<g fill="#1e3548"><polygon points="150,230 164,210 178,230"/></g>
+<!-- forest circles -->
+<g fill="#132219"><circle cx="95" cy="330" r="8"/><circle cx="110" cy="325" r="7"/><circle cx="100" cy="345" r="8"/><circle cx="115" cy="350" r="7"/><circle cx="95" cy="362" r="7"/></g>
+<!-- routes -->
+<g stroke="#2d4a63" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="108,438 144,420 108,372"/>
+<polyline points="108,372 108,258 120,216 102,156"/>
+<polyline points="102,156 144,150 228,174"/>
+<polyline points="228,174 114,258 108,372"/>
+<polyline points="228,174 264,174 228,198"/>
+<polyline points="264,174 228,174"/>
+<polyline points="228,198 264,174 312,174 360,174 360,234"/>
+<polyline points="360,234 264,234 228,270 228,174"/>
+<polyline points="360,234 318,234 228,270"/>
+<polyline points="360,234 396,222 432,270"/>
+<polyline points="432,270 348,228 360,174"/>
+<polyline points="432,270 432,324 444,390 492,432"/>
+<polyline points="432,324 492,354 492,432"/>
+<polyline points="444,390 372,390 300,390"/>
+<polyline points="300,390 264,384 228,348 228,294 228,270"/>
+<polyline points="228,348 114,348 108,372"/>
+</g>
+<!-- water routes -->
+<g stroke="#1a3d5a" stroke-width="1.6" fill="none" stroke-dasharray="4,3">
+<polyline points="108,438 102,480 144,504 228,504"/>
+<polyline points="228,504 300,504 372,504 444,504 492,432"/>
+<polyline points="372,390 372,450 372,504"/>
+<polyline points="108,372 102,420 102,480"/>
+<polyline points="102,156 90,180 90,258 108,372"/>
+</g>
+<!-- route numbers -->
+<g fill="#36556e" font-family="system-ui,sans-serif" font-size="6" font-weight="600">
+<text x="126" y="432">101</text><text x="118" y="320">102</text><text x="150" y="170">103</text>
+<text x="106" y="250">104</text><text x="90" y="405">105</text><text x="90" y="455">106</text>
+<text x="126" y="486">107</text><text x="166" y="498">108</text><text x="260" y="498">109</text>
+<text x="294" y="206">110</text><text x="228" y="224">111</text><text x="200" y="268">112</text>
+<text x="176" y="210">113</text><text x="140" y="216">114</text><text x="96" y="186">115</text>
+<text x="164" y="168">116</text><text x="296" y="244">117</text><text x="340" y="248">118</text>
+<text x="378" y="258">119</text><text x="396" y="234">120</text><text x="406" y="258">121</text>
+<text x="454" y="348">122</text><text x="342" y="390">123</text><text x="486" y="312">124</text>
+<text x="478" y="394">125</text><text x="450" y="424">126</text><text x="508" y="448">127</text>
+<text x="490" y="462">128</text><text x="432" y="498">129</text><text x="380" y="498">130</text>
+<text x="330" y="498">131</text><text x="288" y="498">132</text><text x="240" y="498">133</text>
+<text x="190" y="498">134</text>
+</g>
+<!-- cities -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="108" cy="438" r="5.5"/><circle cx="144" cy="420" r="5.5"/>
+<circle cx="108" cy="372" r="6.5"/><circle cx="108" cy="258" r="7"/>
+<circle cx="102" cy="480" r="5.5"/><circle cx="228" cy="348" r="7"/>
+<circle cx="264" cy="348" r="6.5"/><circle cx="192" cy="180" r="5.5"/>
+<circle cx="228" cy="270" r="6.5"/><circle cx="348" cy="228" r="6.5"/>
+<circle cx="432" cy="270" r="7"/><circle cx="492" cy="354" r="7"/>
+<circle cx="444" cy="390" r="7"/><circle cx="492" cy="432" r="6.5"/>
+<circle cx="360" cy="450" r="5.5"/>
+</g>
+<!-- city labels -->
+<g fill="#6a9cba" font-family="system-ui,sans-serif" font-size="7" font-weight="500">
+<text x="118" y="441">Pv. Raíces</text><text x="154" y="423">Pv. Raras</text>
+<text x="118" y="375">Cd. Petalia</text><text x="118" y="261">Cd. Ferrosa</text>
+<text x="90" y="475">Pv. Déverbal</text><text x="238" y="351">Cd. Malvalona</text>
+<text x="205" y="338">Pv. Verdalia</text><text x="160" y="175">Pv. Lavaridge</text>
+<text x="238" y="264">Pv. Lavacalda</text><text x="296" y="222">Cd. Portual</text>
+<text x="442" y="264">Cd. Trigalia</text><text x="500" y="348">Cd. Calagua</text>
+<text x="454" y="394">Cd. Sotópolis</text><text x="500" y="428">Cd. Ultrópolis</text>
+<text x="328" y="452">Pv. Mareal</text>
+</g>
+<text x="12" y="590" fill="#2a4a65" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="3">HOENN</text>
+</svg>

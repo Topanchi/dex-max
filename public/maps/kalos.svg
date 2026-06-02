@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+<rect width="600" height="600" fill="#071421"/>
+<!-- land -->
+<polygon points="48,48 552,48 552,400 480,440 420,480 300,520 200,510 120,470 72,400 48,300" fill="#1b2d3f"/>
+<!-- frost cavern zone (snow) -->
+<ellipse cx="360" cy="252" rx="30" ry="24" fill="#1c2e3c"/>
+<!-- connecting cave -->
+<ellipse cx="330" cy="312" rx="20" ry="16" fill="#182535"/>
+<!-- glittering cave zone -->
+<ellipse cx="408" cy="330" rx="24" ry="18" fill="#182535"/>
+<!-- reflection cave -->
+<ellipse cx="348" cy="324" rx="18" ry="14" fill="#182535"/>
+<!-- frost cave peaks -->
+<g fill="#1e3548"><polygon points="344,260 360,238 376,260"/></g>
+<!-- glittering cave peaks -->
+<g fill="#1e3548"><polygon points="394,336 408,316 422,336"/></g>
+<!-- santalune forest -->
+<ellipse cx="258" cy="480" rx="30" ry="22" fill="#14251c"/>
+<!-- forest circles -->
+<g fill="#132219"><circle cx="244" cy="470" r="8"/><circle cx="260" cy="464" r="7"/><circle cx="270" cy="478" r="8"/><circle cx="248" cy="488" r="7"/><circle cx="264" cy="494" r="7"/></g>
+<!-- sea spirit's den (west coast sea cave) -->
+<ellipse cx="84" cy="348" rx="16" ry="12" fill="#182535"/>
+<!-- routes -->
+<g stroke="#2d4a63" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="162,522 210,504 258,462"/>
+<polyline points="258,462 300,420 330,378"/>
+<polyline points="162,522 150,480 150,420 228,390 330,378"/>
+<polyline points="330,378 330,318 330,258 300,150 300,192"/>
+<polyline points="300,192 258,150 210,114 162,96"/>
+<polyline points="162,96 210,114"/>
+<polyline points="330,378 372,360 420,330 420,270 330,258"/>
+<polyline points="330,258 270,252 216,252 150,258 120,258"/>
+<polyline points="330,258 360,252 420,270"/>
+<polyline points="420,270 420,192 390,150 330,120"/>
+<polyline points="420,270 480,258 510,258 510,192 420,192"/>
+<polyline points="420,330 432,390 390,432"/>
+<polyline points="390,432 330,378"/>
+<polyline points="420,330 480,348 510,330 510,258"/>
+<polyline points="150,258 120,300 120,390 150,420"/>
+<polyline points="120,390 84,390 84,348"/>
+<polyline points="300,150 300,120 330,120"/>
+<polyline points="150,258 198,234 252,192 300,192"/>
+</g>
+<!-- pokemon village -->
+<polyline points="192,108 162,96 150,114" stroke="#2d4a63" stroke-width="1.6" fill="none"/>
+<!-- route numbers -->
+<g fill="#36556e" font-family="system-ui,sans-serif" font-size="6.5" font-weight="600">
+<text x="182" y="518">1</text><text x="222" y="486">2</text><text x="262" y="482">3</text>
+<text x="300" y="458">4</text><text x="270" y="408">5</text><text x="258" y="384">6</text>
+<text x="216" y="370">7</text><text x="378" y="370">8</text><text x="432" y="300">9</text>
+<text x="374" y="300">10</text><text x="430" y="258">11</text><text x="488" y="300">12</text>
+<text x="496" y="342">13</text><text x="440" y="378">14</text><text x="396" y="396">15</text>
+<text x="240" y="258">16</text><text x="150" y="330">17</text><text x="100" y="376">18</text>
+<text x="130" y="430">19</text><text x="148" y="388">20</text><text x="176" y="270">21</text>
+<text x="264" y="216">22</text>
+</g>
+<!-- lumiose city (large - hub) -->
+<circle cx="330" cy="378" r="11" fill="#3a6285" stroke="#5a92b8" stroke-width="1.5"/>
+<text x="342" y="375" fill="#8ab8d8" font-family="system-ui,sans-serif" font-size="8" font-weight="700">Lumiose</text>
+<!-- cities -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="162" cy="522" r="5"/><circle cx="210" cy="504" r="5.5"/>
+<circle cx="258" cy="462" r="6"/><circle cx="228" cy="390" r="6"/>
+<circle cx="372" cy="360" r="6.5"/><circle cx="408" cy="204" r="5.5"/>
+<circle cx="420" cy="270" r="6.5"/><circle cx="330" cy="252" r="6"/>
+<circle cx="330" cy="192" r="6"/><circle cx="216" cy="252" r="6.5"/>
+<circle cx="396" cy="432" r="6"/><circle cx="150" cy="258" r="6.5"/>
+<circle cx="168" cy="180" r="5.5"/><circle cx="432" cy="432" r="5.5"/>
+</g>
+<!-- city labels -->
+<g fill="#6a9cba" font-family="system-ui,sans-serif" font-size="7" font-weight="500">
+<text x="112" y="516">Pv. Vaniville</text><text x="220" y="507">Pv. Aquacorde</text>
+<text x="268" y="465">Cd. Santalune</text><text x="180" y="386">Pv. Camphrier</text>
+<text x="382" y="354">Cd. Cyllage</text><text x="418" y="198">Pv. Ambrette</text>
+<text x="430" y="265">Cd. Geosenge</text><text x="278" y="246">Cd. Shalour</text>
+<text x="278" y="186">Cd. Coumarine</text><text x="158" y="252">Cd. Laverre</text>
+<text x="350" y="428">Cd. Dendemille</text><text x="70" y="248">Cd. Anistar</text>
+<text x="138" y="176">Cd. Couriway</text><text x="420" y="426">Cd. Snowbelle</text>
+</g>
+<text x="12" y="590" fill="#2a4a65" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="3">KALOS</text>
+</svg>

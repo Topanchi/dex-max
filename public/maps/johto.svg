@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+<rect width="600" height="600" fill="#071421"/>
+<!-- land -->
+<polygon points="38,38 562,38 562,562 260,562 260,420 110,420 75,370 38,370" fill="#1b2d3f"/>
+<!-- whirl islands -->
+<ellipse cx="168" cy="400" rx="26" ry="16" fill="#1b2d3f"/>
+<!-- mt silver zone -->
+<ellipse cx="72" cy="132" rx="50" ry="55" fill="#182535"/>
+<!-- mt mortar zone -->
+<ellipse cx="385" cy="210" rx="30" ry="24" fill="#182535"/>
+<!-- ice path zone -->
+<ellipse cx="438" cy="132" rx="26" ry="20" fill="#1f3545"/>
+<!-- dark cave zone -->
+<ellipse cx="432" cy="290" rx="22" ry="18" fill="#182535"/>
+<!-- ilex forest -->
+<ellipse cx="258" cy="348" rx="30" ry="22" fill="#14251c"/>
+<!-- national park -->
+<rect x="268" y="222" width="44" height="34" rx="6" fill="#142218"/>
+<!-- mountain peaks mt silver -->
+<g fill="#1e3548"><polygon points="48,150 62,126 76,150"/><polygon points="68,150 82,126 96,150"/><polygon points="54,178 68,154 82,178"/></g>
+<!-- mountain peaks mt mortar -->
+<g fill="#1e3548"><polygon points="368,220 382,200 396,220"/><polygon points="384,220 398,200 412,220"/></g>
+<!-- forest circles ilex -->
+<g fill="#132219"><circle cx="246" cy="340" r="8"/><circle cx="260" cy="334" r="8"/><circle cx="272" cy="344" r="7"/><circle cx="250" cy="355" r="7"/><circle cx="266" cy="358" r="8"/></g>
+<!-- routes -->
+<g stroke="#2d4a63" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="492,432 450,444 432,444 390,444"/>
+<polyline points="390,444 372,372 390,300"/>
+<polyline points="390,300 360,270 210,270 175,250 175,215"/>
+<polyline points="390,300 390,216"/>
+<polyline points="390,216 300,180 250,180"/>
+<polyline points="250,180 210,180 175,215"/>
+<polyline points="175,215 150,230 150,270 130,295"/>
+<polyline points="175,215 175,190 210,168 252,155"/>
+<polyline points="252,155 300,144 390,144 438,132"/>
+<polyline points="390,144 390,216"/>
+<polyline points="390,216 432,228 438,290 438,360 492,432"/>
+<polyline points="130,295 120,330 120,390"/>
+<polyline points="120,390 108,406 108,450 175,480 260,480"/>
+<polyline points="252,155 220,132 140,120 72,132"/>
+<polyline points="72,132 72,210 72,270 130,295"/>
+</g>
+<!-- water routes west coast -->
+<g stroke="#1a3d5a" stroke-width="1.6" fill="none" stroke-dasharray="4,3">
+<polyline points="130,295 100,330 100,390 108,406"/>
+<line x1="100" y1="390" x2="60" y2="440"/>
+</g>
+<!-- ruins of alph -->
+<rect x="362" y="338" width="22" height="16" rx="3" fill="#1a2535" stroke="#2a3848" stroke-width="1"/>
+<text x="365" y="349" fill="#3a5060" font-family="system-ui,sans-serif" font-size="5">Ruinas</text>
+<!-- route numbers -->
+<g fill="#36556e" font-family="system-ui,sans-serif" font-size="6.5" font-weight="600">
+<text x="462" y="440">29</text><text x="388" y="410">30</text><text x="392" y="334">31</text>
+<text x="360" y="295">32</text><text x="280" y="300">33</text><text x="160" y="258">34</text>
+<text x="152" y="226">35</text><text x="295" y="220">36</text><text x="356" y="200">37</text>
+<text x="183" y="240">38</text><text x="140" y="270">39</text><text x="102" y="355">40</text>
+<text x="58" y="430">41</text><text x="396" y="180">42</text><text x="400" y="148">43</text>
+<text x="440" y="200">44</text><text x="448" y="310">45</text><text x="454" y="400">46</text>
+</g>
+<!-- cities -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="492" cy="432" r="5.5"/><circle cx="432" cy="444" r="5.5"/>
+<circle cx="390" cy="300" r="6.5"/><circle cx="210" cy="390" r="6"/>
+<circle cx="175" cy="215" r="7"/><circle cx="300" cy="180" r="7"/>
+<circle cx="150" cy="330" r="7"/><circle cx="100" cy="390" r="6.5"/>
+<circle cx="390" cy="168" r="6"/><circle cx="438" cy="132" r="6"/>
+<circle cx="72"  cy="132" r="5.5"/>
+</g>
+<!-- city labels -->
+<g fill="#6a9cba" font-family="system-ui,sans-serif" font-size="7.5" font-weight="500">
+<text x="502" y="435">Pv. Corteza</text>
+<text x="442" y="447">Cd. Cerezo</text>
+<text x="400" y="303">Cd. Violeta</text>
+<text x="175" y="393">Pv. Azalea</text>
+<text x="185" y="218">Cd. Corazón</text>
+<text x="244" y="183">Cd. Trigal</text>
+<text x="130" y="332">Cd. Oliva</text>
+<text x="72"  y="393">Cd. Madreselva</text>
+<text x="354" y="162">Pv. Caoba</text>
+<text x="448" y="126">Cd. Nogal</text>
+<text x="44"  y="126">Mt. Plata</text>
+</g>
+<text x="12" y="590" fill="#2a4a65" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="3">JOHTO</text>
+</svg>
