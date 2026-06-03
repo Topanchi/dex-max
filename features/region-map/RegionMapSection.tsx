@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { REGION_CONFIGS } from '@/lib/locationCoords';
+import { GALAR_DLC } from '@/lib/galarDlc';
 import { normalizePokemonName } from '@/utils/normalize';
 
 interface RegionLocation {
@@ -57,8 +58,18 @@ export function RegionMapSection() {
 
   // Load region locations when region tab changes
   useEffect(() => {
-    // Las zonas de los DLC (Noroteo, Biodomo) solo se muestran como mapa
-    // rotulado: la PokéAPI no expone ubicaciones ni encuentros para ellas.
+    // DLC de Galar (Isla de la Armadura, Nieves de la Corona): dataset curado
+    // estático, ya que la PokéAPI no tiene encuentros de generación 8.
+    const dlc = GALAR_DLC[region];
+    if (dlc) {
+      setLocations(dlc.map(l => ({ slug: l.slug, nameEs: l.nameEs, x: l.x, y: l.y })));
+      setSelected(null);
+      setLocData(null);
+      setLocLoading(false);
+      return;
+    }
+    // Las zonas de los DLC de Paldea (Noroteo, Biodomo) solo se muestran como
+    // mapa: la PokéAPI no expone ubicaciones ni encuentros para ellas.
     if (REGION_CONFIGS[region]?.imageOnly) {
       setLocations([]);
       setSelected(null);
@@ -91,6 +102,30 @@ export function RegionMapSection() {
     if (!selected) { setLocData(null); return; }
     const cached = locationCache.current.get(selected.slug);
     if (cached) { setLocData(cached); return; }
+
+    // Curated Galar-DLC data: resolve the static Pokémon name list to sprites.
+    const dlc = GALAR_DLC[region];
+    const dlcLoc = dlc?.find(l => l.slug === selected.slug);
+    if (dlcLoc) {
+      setDataLoading(true);
+      setLocData(null);
+      fetch(`/api/pokemon-list?names=${dlcLoc.pokemon.join(',')}`)
+        .then(r => r.json())
+        .then(data => {
+          const result: LocationData = {
+            nameEs: dlcLoc.nameEs,
+            pokemon: (data.pokemon ?? []).map((p: { name: string; id: number; sprite: string | null }) => ({
+              name: p.name, id: p.id, sprite: p.sprite, methods: [],
+            })),
+          };
+          locationCache.current.set(selected.slug, result);
+          setLocData(result);
+          setDataLoading(false);
+        })
+        .catch(() => setDataLoading(false));
+      return;
+    }
+
     setDataLoading(true);
     setLocData(null);
     fetch(`/api/location/${selected.slug}/pokemon`)
@@ -101,7 +136,7 @@ export function RegionMapSection() {
         setDataLoading(false);
       })
       .catch(() => setDataLoading(false));
-  }, [selected]);
+  }, [selected, region]);
 
   return (
     <section>
