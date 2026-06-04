@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { REGION_CONFIGS } from '@/lib/locationCoords';
-import { GALAR_DLC } from '@/lib/galarDlc';
+import { CURATED_LOCATIONS } from '@/lib/galarDlc';
 import { normalizePokemonName } from '@/utils/normalize';
 
 interface RegionLocation {
@@ -58,9 +58,9 @@ export function RegionMapSection() {
 
   // Load region locations when region tab changes
   useEffect(() => {
-    // DLC de Galar (Isla de la Armadura, Nieves de la Corona): dataset curado
-    // estático, ya que la PokéAPI no tiene encuentros de generación 8.
-    const dlc = GALAR_DLC[region];
+    // Regiones con dataset curado (DLC de Galar e Hisui): la PokéAPI no tiene
+    // encuentros de generación 8, así que los pines salen de datos estáticos.
+    const dlc = CURATED_LOCATIONS[region];
     if (dlc) {
       setLocations(dlc.map(l => ({ slug: l.slug, nameEs: l.nameEs, x: l.x, y: l.y })));
       setSelected(null);
@@ -103,8 +103,8 @@ export function RegionMapSection() {
     const cached = locationCache.current.get(selected.slug);
     if (cached) { setLocData(cached); return; }
 
-    // Curated Galar-DLC data: resolve the static Pokémon name list to sprites.
-    const dlc = GALAR_DLC[region];
+    // Curated data (Galar DLC / Hisui): resolve the static name list to sprites.
+    const dlc = CURATED_LOCATIONS[region];
     const dlcLoc = dlc?.find(l => l.slug === selected.slug);
     if (dlcLoc) {
       setDataLoading(true);

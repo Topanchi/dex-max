@@ -18,10 +18,22 @@ export async function GET(request: NextRequest) {
     n
       .trim()
       .toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '') // strip accents (flabébé→flabebe)
       .replace(/♀/g, '-f')
       .replace(/♂/g, '-m')
       .replace(/['.]/g, '')
-      .replace(/\s+/g, '-');
+      .replace(/\s+/g, '-')
+      // Hisui form fixes (WikiDex uses "-hisuian", PokéAPI uses "-hisui").
+      .replace(/hisuian/g, 'hisui')
+      // Shellos/Gastrodon have no API form variants.
+      .replace(/-(east|west)$/, '')
+      // Basculin white-striped (Hisui) full slug.
+      .replace(/^basculin-white$/, 'basculin-white-striped')
+      // Paldean forms ("X de paldea").
+      .replace(/^tauros-de-paldea$/, 'tauros-paldea-combat-breed')
+      .replace(/-de-paldea$/, '-paldea')
+      // Galarian forms ("X de galar" / "X-of-galar").
+      .replace(/-(de|of)-galar$/, '-galar');
 
   const names = Array.from(
     new Set(namesParam.split(',').map(normalize).filter(Boolean)),
