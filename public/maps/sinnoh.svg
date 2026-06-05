@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+<rect width="600" height="600" fill="#071421"/>
+<!-- land -->
+<polygon points="38,38 562,38 562,530 430,530 390,562 200,562 120,530 80,480 38,480" fill="#1b2d3f"/>
+<!-- iron island -->
+<ellipse cx="58" cy="330" rx="26" ry="18" fill="#1b2d3f"/>
+<!-- lake verity -->
+<ellipse cx="144" cy="438" rx="18" ry="12" fill="#0d1f30"/>
+<!-- lake valor -->
+<ellipse cx="348" cy="450" rx="18" ry="12" fill="#0d1f30"/>
+<!-- lake acuity -->
+<ellipse cx="240" cy="108" rx="18" ry="12" fill="#0d1f30"/>
+<!-- mt coronet central spine -->
+<polygon points="252,50 276,50 290,120 296,200 296,300 284,420 270,530 236,530 220,420 208,300 214,200 220,120" fill="#162030" opacity="0.8"/>
+<!-- mt coronet peaks -->
+<g fill="#1e3548">
+<polygon points="234,100 252,72 270,100"/><polygon points="256,100 274,72 292,100"/>
+<polygon points="238,160 254,138 270,160"/><polygon points="258,160 276,138 294,160"/>
+<polygon points="240,220 256,198 272,220"/><polygon points="252,320 268,298 284,320"/>
+</g>
+<!-- snowpoint snow zone -->
+<ellipse cx="282" cy="86" rx="80" ry="50" fill="#1c2e3c" opacity="0.6"/>
+<!-- stark mountain zone -->
+<ellipse cx="408" cy="198" rx="30" ry="24" fill="#182535"/>
+<!-- stark mountain peaks -->
+<g fill="#1e3548"><polygon points="390,208 408,186 426,208"/></g>
+<!-- eterna forest -->
+<ellipse cx="162" cy="258" rx="28" ry="36" fill="#14251c"/>
+<!-- forest circles -->
+<g fill="#132219"><circle cx="150" cy="244" r="8"/><circle cx="166" cy="238" r="7"/><circle cx="154" cy="260" r="9"/><circle cx="170" cy="264" r="7"/><circle cx="148" cy="278" r="7"/></g>
+<!-- routes -->
+<g stroke="#2d4a63" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="156,492 192,468 156,420 114,420"/>
+<polyline points="114,420 114,204 156,192"/>
+<polyline points="156,192 228,192 228,150"/>
+<polyline points="228,150 330,228 330,138"/>
+<polyline points="330,138 390,192 420,138 282,84"/>
+<polyline points="282,84 228,84"/>
+<polyline points="282,84 330,138"/>
+<polyline points="330,228 390,360 390,270"/>
+<polyline points="390,270 330,270 330,228"/>
+<polyline points="330,228 390,360 330,438 276,438 276,360 330,300"/>
+<polyline points="276,438 156,420"/>
+<polyline points="330,270 390,270 408,198"/>
+<polyline points="390,360 480,420 480,300 408,198"/>
+<polyline points="480,420 432,492 390,510"/>
+<polyline points="114,204 78,204 58,258 58,330"/>
+<polyline points="156,192 198,156 228,150"/>
+<polyline points="228,150 228,84"/>
+</g>
+<!-- route numbers -->
+<g fill="#36556e" font-family="system-ui,sans-serif" font-size="6" font-weight="600">
+<text x="162" y="488">201</text><text x="170" y="448">202</text><text x="138" y="310">203</text>
+<text x="130" y="258">204</text><text x="140" y="222">205</text><text x="232" y="270">206</text>
+<text x="136" y="392">207</text><text x="283" y="244">208</text><text x="305" y="360">209</text>
+<text x="296" y="252">210</text><text x="252" y="196">211</text><text x="340" y="390">212</text>
+<text x="396" y="438">213</text><text x="398" y="314">214</text><text x="338" y="254">215</text>
+<text x="236" y="116">216</text><text x="244" y="90">217</text><text x="80" y="214">218</text>
+<text x="162" y="504">219</text><text x="210" y="498">220</text><text x="280" y="498">221</text>
+<text x="488" y="384">222</text><text x="486" y="278">223</text><text x="482" y="240">224</text>
+<text x="410" y="230">225</text><text x="432" y="354">226</text><text x="404" y="174">227</text>
+<text x="432" y="298">228</text><text x="454" y="462">229</text><text x="410" y="504">230</text>
+</g>
+<!-- cities -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="156" cy="492" r="5.5"/><circle cx="192" cy="468" r="5.5"/>
+<circle cx="156" cy="420" r="6.5"/><circle cx="228" cy="438" r="6.5"/>
+<circle cx="114" cy="204" r="6.5"/><circle cx="198" cy="228" r="6.5"/>
+<circle cx="330" cy="360" r="6.5"/><circle cx="330" cy="288" r="6"/>
+<circle cx="390" cy="270" r="6.5"/><circle cx="276" cy="438" r="6.5"/>
+<circle cx="216" cy="204" r="6"/><circle cx="114" cy="420" r="6"/>
+<circle cx="282" cy="84"  r="6.5"/><circle cx="480" cy="420" r="6.5"/>
+<circle cx="100" cy="132" r="5.5"/>
+</g>
+<!-- city labels -->
+<g fill="#6a9cba" font-family="system-ui,sans-serif" font-size="7" font-weight="500">
+<text x="166" y="495">Pv. Hojaverde</text><text x="200" y="471">Pv. Arenaval</text>
+<text x="116" y="412">Cd. Jubileo</text><text x="238" y="441">Cd. Mina</text>
+<text x="120" y="198">Cd. Floral</text><text x="208" y="222">Cd. Vetusta</text>
+<text x="338" y="354">Cd. Corazón</text><text x="338" y="282">Pv. Solaceon</text>
+<text x="400" y="264">Cd. Veilstone</text><text x="260" y="430">Cd. Puntaneva</text>
+<text x="226" y="198">Pv. Celestica</text><text x="80" y="412">Cd. Canalava</text>
+<text x="253" y="78">Cd. Nívea</text><text x="488" y="414">Cd. Solunar</text>
+<text x="60" y="128">Liga</text>
+</g>
+<text x="12" y="590" fill="#2a4a65" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="3">SINNOH</text>
+</svg>
