@@ -11,6 +11,7 @@ import { FormsSection } from './FormsSection';
 import { TCGSection } from './TCGSection';
 import { TCGPocketSection } from './TCGPocketSection';
 import { MovesSection } from './MovesSection';
+import { GameLocationModal } from './GameLocationModal';
 import {
   normalizePokemonName,
   formatPokedexNumber,
@@ -18,7 +19,7 @@ import {
   formatWeight,
 } from '@/utils/normalize';
 import { getTypeGradient } from '@/utils/typeColors';
-import type { PokemonDetail } from '@/types/pokemon';
+import type { PokemonDetail, GameAppearance } from '@/types/pokemon';
 
 const EEVEE_FAMILY = new Set([
   133, // Eevee
@@ -40,6 +41,7 @@ export function PokemonDetailView({ pokemon }: Props) {
   const [spriteGallery, setSpriteGallery] = useState(false);
   const [gameLocations, setGameLocations] = useState(false);
   const [movesOpen, setMovesOpen] = useState(false);
+  const [selectedGame, setSelectedGame] = useState<GameAppearance | null>(null);
   const isEeveeFamily = EEVEE_FAMILY.has(pokemon.id);
 
   const displayName = normalizePokemonName(pokemon.name);
@@ -329,18 +331,26 @@ export function PokemonDetailView({ pokemon }: Props) {
           {gameLocations && (
             <div className="flex flex-wrap gap-2">
               {pokemon.gameAppearances.map(game => game.image && (
-                <div key={game.title} className="flex flex-col items-center gap-1">
+                <button
+                  key={game.title}
+                  onClick={() => setSelectedGame(game)}
+                  className="flex flex-col items-center gap-1 group focus:outline-none
+                             focus:ring-2 focus:ring-white/30 rounded-lg touch-manipulation"
+                  aria-label={`Ver localización en ${game.titleEs}`}
+                >
                   <img
                     src={game.image}
                     alt={game.titleEs}
                     width={76}
                     height={56}
-                    className="object-contain rounded-lg"
+                    className="object-contain rounded-lg group-hover:ring-2 group-hover:ring-white/40
+                               group-hover:scale-105 transition-all duration-150"
                   />
-                  <span className="text-[10px] text-slate-400 text-center leading-tight max-w-[64px]">
+                  <span className="text-[10px] text-slate-400 group-hover:text-slate-200
+                                   text-center leading-tight max-w-[64px] transition-colors">
                     {game.titleEs}
                   </span>
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -378,6 +388,15 @@ export function PokemonDetailView({ pokemon }: Props) {
 
       {/* ─── TCG Pocket cards ─────────────────────────────────────────────── */}
       <TCGPocketSection pokemonName={pokemon.name} />
+
+      {selectedGame && (
+        <GameLocationModal
+          pokemonId={pokemon.id}
+          pokemonName={displayName}
+          game={selectedGame}
+          onClose={() => setSelectedGame(null)}
+        />
+      )}
     </div>
   );
 }

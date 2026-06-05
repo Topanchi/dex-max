@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Pokédex' },
+  { href: '/',        label: 'Pokédex'  },
+  { href: '/mapa',    label: 'Mapa'     },
   { href: '/pokeballs', label: 'Pokéballs' },
-  { href: '/items', label: 'Objetos' },
+  { href: '/items',   label: 'Objetos'  },
 ];
 
 export function NavLinks() {

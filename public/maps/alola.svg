@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+<rect width="600" height="600" fill="#071421"/>
+<!-- ocean with waves hint -->
+<rect width="600" height="600" fill="#08141f"/>
+<!-- MELEMELE ISLAND (bottom-left) -->
+<ellipse cx="125" cy="380" rx="112" ry="100" fill="#1b2d3f"/>
+<!-- Ten Carat Hill -->
+<ellipse cx="84" cy="312" rx="20" ry="16" fill="#182535"/>
+<g fill="#1e3548"><polygon points="74,318 84,300 94,318"/></g>
+<!-- Verdant Cavern -->
+<ellipse cx="156" cy="252" rx="16" ry="12" fill="#182535"/>
+<!-- AKALA ISLAND (center-right) -->
+<ellipse cx="366" cy="210" rx="118" ry="108" fill="#1b2d3f"/>
+<!-- Lush Jungle zone -->
+<ellipse cx="408" cy="168" rx="30" ry="24" fill="#14251c"/>
+<g fill="#132219"><circle cx="396" cy="160" r="8"/><circle cx="414" cy="156" r="7"/><circle cx="406" cy="174" r="8"/><circle cx="420" cy="172" r="7"/></g>
+<!-- Diglett's Tunnel -->
+<ellipse cx="312" cy="222" rx="18" ry="12" fill="#182535"/>
+<!-- Memorial Hill -->
+<ellipse cx="430" cy="246" rx="16" ry="12" fill="#182535"/>
+<!-- ULA'ULA ISLAND (top-left) -->
+<ellipse cx="168" cy="186" rx="108" ry="92" fill="#1b2d3f"/>
+<!-- Mt Lanakila (snow) -->
+<ellipse cx="132" cy="138" rx="34" ry="28" fill="#1c2e3c"/>
+<g fill="#1e3548"><polygon points="114,148 132,120 150,148"/><polygon points="126,148 144,120 162,148"/></g>
+<!-- Haina Desert -->
+<ellipse cx="216" cy="186" rx="22" ry="18" fill="#1e2c20"/>
+<!-- PONI ISLAND (bottom-right) -->
+<ellipse cx="450" cy="390" rx="96" ry="88" fill="#1b2d3f"/>
+<!-- Poni Canyon -->
+<ellipse cx="468" cy="354" rx="22" ry="18" fill="#182535"/>
+<g fill="#1e3548"><polygon points="456,362 468,342 480,362"/></g>
+<!-- Vast Poni Canyon -->
+<ellipse cx="432" cy="372" rx="18" ry="14" fill="#182535"/>
+<!-- Exeggutor Island -->
+<ellipse cx="390" cy="456" rx="22" ry="14" fill="#1b2d3f"/>
+<!-- routes / connections within islands -->
+<!-- Melemele routes -->
+<g stroke="#2d4a63" stroke-width="1.5" fill="none" stroke-linecap="round">
+<polyline points="150,372 120,360 90,348 84,312"/>
+<polyline points="90,348 80,378 70,414 90,444 120,456"/>
+<polyline points="120,360 120,336 140,318 156,306 156,252"/>
+<polyline points="156,252 156,222 150,192"/>
+<polyline points="156,306 180,312 180,372 150,372"/>
+<polyline points="84,312 100,290 140,282 156,252"/>
+</g>
+<!-- Akala routes -->
+<g stroke="#2d4a63" stroke-width="1.5" fill="none" stroke-linecap="round">
+<polyline points="330,174 330,210 312,246 300,300"/>
+<polyline points="330,174 360,162 408,168 444,198 444,246 430,270 390,300 360,318 330,336"/>
+<polyline points="312,246 360,258 390,270 430,270"/>
+<polyline points="330,336 300,300 270,270 300,240 312,246"/>
+</g>
+<!-- Ula'ula routes -->
+<g stroke="#2d4a63" stroke-width="1.5" fill="none" stroke-linecap="round">
+<polyline points="150,192 132,180 108,174 84,180 72,204 80,234 108,240 132,228"/>
+<polyline points="132,228 156,228 180,210 204,192 216,168 228,150"/>
+<polyline points="108,174 108,150 132,138"/>
+<polyline points="132,138 156,150 180,162 204,168 216,168"/>
+</g>
+<!-- Poni routes -->
+<g stroke="#2d4a63" stroke-width="1.5" fill="none" stroke-linecap="round">
+<polyline points="402,360 432,360 456,348 480,360 504,390 510,420 492,444 462,456 432,444 408,432"/>
+<polyline points="432,360 432,372 420,396 408,432"/>
+</g>
+<!-- city markers Melemele -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="150" cy="372" r="6"/><circle cx="90" cy="348" r="6.5"/>
+<circle cx="120" cy="456" r="5.5"/>
+</g>
+<!-- city markers Akala -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="330" cy="174" r="6.5"/><circle cx="300" cy="300" r="6.5"/>
+<circle cx="408" cy="300" r="6.5"/>
+</g>
+<!-- city markers Ula'ula -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="108" cy="174" r="6.5"/><circle cx="204" cy="168" r="5.5"/>
+<circle cx="228" cy="150" r="5.5"/>
+</g>
+<!-- city markers Poni -->
+<g fill="#3a6285" stroke="#5a92b8" stroke-width="1">
+<circle cx="462" cy="456" r="6.5"/>
+</g>
+<!-- island labels -->
+<g fill="#1e3a52" font-family="system-ui,sans-serif" font-size="8" font-weight="700">
+<text x="80"  y="450" text-anchor="middle">MELEMELE</text>
+<text x="366" y="132" text-anchor="middle">AKALA</text>
+<text x="168" y="108" text-anchor="middle">ULA'ULA</text>
+<text x="450" y="480" text-anchor="middle">PONI</text>
+</g>
+<!-- city labels -->
+<g fill="#6a9cba" font-family="system-ui,sans-serif" font-size="7" font-weight="500">
+<text x="160" y="375">Pv. Iki</text><text x="100" y="344">Cd. Hau'oli</text>
+<text x="130" y="459">Gran Hotel</text>
+<text x="298" y="170">Cd. Heahea</text><text x="264" y="294">Pv. Paniola</text>
+<text x="372" y="296">Cd. Konikoni</text>
+<text x="118" y="170">Cd. Malie</text><text x="214" y="164">Pv. Tapu</text>
+<text x="238" y="146">Pv. Po</text>
+<text x="472" y="452">Pv. Seafolk</text>
+</g>
+<text x="12" y="590" fill="#2a4a65" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="3">ALOLA</text>
+</svg>

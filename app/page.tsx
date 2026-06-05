@@ -4,7 +4,6 @@ import { PokedexClient } from '@/features/pokedex/PokedexClient';
 export const revalidate = 86400;
 
 export default async function Home() {
-  // Server-side fetch of the first page — fast, cached, SEO-friendly
   const initialPage = await fetchPokemonPage(0, 20);
 
   return (

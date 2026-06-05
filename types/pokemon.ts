@@ -289,6 +289,20 @@ export interface PokemonDetail {
   moves: VersionGroupMoves[];
 }
 
+export interface EncounterMethod {
+  method: string;
+  minLevel: number;
+  maxLevel: number;
+  chance: number;
+}
+
+export interface EncounterLocation {
+  location: string;
+  locationSlug: string;
+  region: string;
+  methods: EncounterMethod[];
+}
+
 export interface PokemonListPageResult {
   pokemon: PokemonBasic[];
   total: number;
