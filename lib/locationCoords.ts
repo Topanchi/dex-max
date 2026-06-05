@@ -367,9 +367,9 @@ export const LOCATION_COORDS: Record<string, { x: number; y: number }> = {
   'ten-carat-hill':        { x: 14, y: 27 },
   'verdant-cavern':        { x: 25, y: 22 },
   'melemele-sea':          { x: 33, y: 35 },
-  'kala-e-bay':            { x: 9,  y: 27 },
+  'kala-e-bay':            { x: 12, y: 30 },
   'big-wave-beach':        { x: 55, y: 39 },
-  'seaward-cave':          { x: 11, y: 23 },
+  'seaward-cave':          { x: 14, y: 25 },
 
   // ── GALAR ─────────────────────────────────────────────────────────────────
   'postwick':              { x: 50, y: 90 },

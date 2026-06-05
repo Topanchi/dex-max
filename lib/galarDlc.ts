@@ -312,7 +312,7 @@ export const CURATED_LOCATIONS: Record<string, DlcLocation[]> = {
       pokemon: ['sylveon','gastrodon','wugtrio','jumpluff','sunflora','florges','dedenne','vivillon','golduck','barraskewda','flamigo','drakloak','bellibolt','gogoat','naclstack','honchkrow','copperajah','beartic','frosmoth','houndstone','cetitan','froslass','glaceon','salazzle','eiscue'],
     },
     {
-      slug: 'paldea-area-cero', nameEs: 'Área Cero', x: 50, y: 48,
+      slug: 'paldea-area-cero', nameEs: 'Área Cero', x: 47, y: 54,
       pokemon: ['koraidon','miraidon','great-tusk','scream-tail','brute-bonnet','flutter-mane','slither-wing','sandy-shocks','iron-treads','iron-moth','iron-thorns','iron-hands','iron-jugulis','iron-bundle','roaring-moon','iron-valiant','raichu','golduck','hypno','gabite','weavile','bisharp','garganacl','glimmora','volcarona','dreepy','espathra','donphan'],
     },
   ],
@@ -398,39 +398,39 @@ export const CURATED_LOCATIONS: Record<string, DlcLocation[]> = {
       pokemon: ['skwovet','rookidee','wooloo','nickit','blipbug','caterpie','grubbin','hoothoot'],
     },
     {
-      slug: 'galar-route-2', nameEs: 'Ruta 2', x: 43, y: 84,
+      slug: 'galar-route-2', nameEs: 'Ruta 2', x: 57, y: 80,
       pokemon: ['blipbug','rookidee','lotad','seedot','purrloin','hoothoot','skwovet','nickit','chewtle','yamper','zigzagoon-galar','magikarp','arrokuda','feebas','gossifleur','barraskewda','gyarados','drednaw','lapras'],
     },
     {
-      slug: 'galar-route-3', nameEs: 'Ruta 3', x: 34, y: 62,
+      slug: 'galar-route-3', nameEs: 'Ruta 3', x: 27, y: 67,
       pokemon: ['zigzagoon-galar','gossifleur','vulpix','growlithe','stunky','trubbish','tyrogue','corvisquire','sizzlipede','klink','mudbray','machop','pancham','rookidee','rolycoly','skwovet','cherubi'],
     },
     {
-      slug: 'galar-route-4', nameEs: 'Ruta 4', x: 22, y: 58,
+      slug: 'galar-route-4', nameEs: 'Ruta 4', x: 18, y: 59,
       pokemon: ['electrike','meowth-galar','yamper','pumpkaboo','pikachu','eevee','diglett','ferroseed','budew','cutiefly','joltik','milcery','wooloo','magikarp','chewtle','goldeen','skwovet'],
     },
     {
-      slug: 'galar-route-5', nameEs: 'Ruta 5', x: 40, y: 56,
+      slug: 'galar-route-5', nameEs: 'Ruta 5', x: 35, y: 58,
       pokemon: ['stufful','swirlix','spritzee','minccino','wobbuffet','farfetchd','drifloon','eldegoss','dottler','espurr','nuzleaf','lombre','applin','dewpider','nincada','magikarp','chewtle','goldeen','skwovet','toxel'],
     },
     {
-      slug: 'galar-route-6', nameEs: 'Ruta 6', x: 12, y: 61,
+      slug: 'galar-route-6', nameEs: 'Ruta 6', x: 15, y: 47,
       pokemon: ['yamask-galar','helioptile','dugtrio','maractus','axew','trapinch','silicobra','durant','heatmor','duskull','skorupi','hippopotas','torkoal','hawlucha','magikarp','drednaw','goldeen','greedent','dracozolt','arctozolt','dracovish','arctovish'],
     },
     {
-      slug: 'galar-route-7', nameEs: 'Ruta 7', x: 38, y: 47,
+      slug: 'galar-route-7', nameEs: 'Ruta 7', x: 50, y: 49,
       pokemon: ['perrserker','thievul','galvantula','liepard','inkay','morpeko','toxel','karrablast','shelmet','corviknight','meowstic','seismitoad','greedent'],
     },
     {
-      slug: 'galar-route-8', nameEs: 'Ruta 8', x: 60, y: 40,
+      slug: 'galar-route-8', nameEs: 'Ruta 8', x: 50, y: 44,
       pokemon: ['golett','gurdurr','boldore','pawniard','rufflet','vullaby','togedemaru','solrock','lunatone','crustle','falinks','sandaconda','rhyhorn','dusclops','haunter','bronzong','hippowdon','drapion','snom','snorunt','sneasel','vanillish','sawk','throh','snover','delibird','darumaka'],
     },
     {
-      slug: 'galar-route-9', nameEs: 'Ruta 9 (Bahía Circular)', x: 80, y: 46,
+      slug: 'galar-route-9', nameEs: 'Ruta 9 (Bahía Circular)', x: 87, y: 41,
       pokemon: ['pelipper','mareanie','jellicent','gastrodon','pyukumuku','cramorant','octillery','kingler','pincurchin','wishiwashi','qwilfish','mantyke','clobbopus','toxapex','barbaracle','bergmite','dhelmise','inkay','wailmer','mantine','wailord','lapras','remoraid','greedent','perrserker','thievul','liepard','morpeko'],
     },
     {
-      slug: 'galar-route-10', nameEs: 'Ruta 10', x: 45, y: 13,
+      slug: 'galar-route-10', nameEs: 'Ruta 10', x: 45, y: 35,
       pokemon: ['mr-mime-galar','cubchoo','snover','glalie','vanilluxe','klang','vanillish','rhydon','snom','darumaka-galar','abomasnow','beartic','sneasel','duraludon','stonjourner','eiscue'],
     },
     {
@@ -450,7 +450,7 @@ export const CURATED_LOCATIONS: Record<string, DlcLocation[]> = {
       pokemon: ['nickit','koffing','scraggy','croagunk','hitmonlee','hitmonchan','electrike','palpitoad','hippopotas','growlithe','vulpix','drilbur','cubchoo','sneasel','vanillish','delibird','snover','mawile','swinub','shuckle','wobbuffet','duskull','sableye','gothorita','eldegoss','dubwool','hattrem','applin'],
     },
     {
-      slug: 'lago-del-enfado', nameEs: 'Lago del Enfado', x: 35, y: 64,
+      slug: 'lago-del-enfado', nameEs: 'Lago del Enfado', x: 30, y: 72,
       pokemon: ['beheeyem','braviary','mandibuzz','golurk','sigilyph','ditto','garbodor','drapion','weezing','hitmontop','drakloak','seismitoad','araquanid','golisopod','rotom','galvantula','noivern','haxorus','morpeko','ninetales','arcanine','durant','heatmor','lampent','flygon','glalie','vanilluxe','abomasnow','bergmite','klinklang'],
     },
   ],
