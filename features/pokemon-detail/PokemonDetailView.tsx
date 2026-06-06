@@ -11,6 +11,7 @@ import { FormsSection } from './FormsSection';
 import { TCGSection } from './TCGSection';
 import { TCGPocketSection } from './TCGPocketSection';
 import { MovesSection } from './MovesSection';
+import { TypeMatchups } from './TypeMatchups';
 import { GameAvailability } from './GameAvailability';
 import {
   normalizePokemonName,
@@ -32,6 +33,18 @@ const EEVEE_FAMILY = new Set([
   471, // Glaceon
   700, // Sylveon
 ]);
+
+// PokéAPI gender_rate (-1 genderless, else female ratio out of 8) → "♂ % · ♀ %".
+function formatGender(rate: number): string {
+  if (rate < 0) return 'Sin género';
+  const female = (rate / 8) * 100;
+  const male = 100 - female;
+  const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1)).replace('.', ',');
+  const parts: string[] = [];
+  if (male > 0) parts.push(`♂ ${fmt(male)}%`);
+  if (female > 0) parts.push(`♀ ${fmt(female)}%`);
+  return parts.join(' · ');
+}
 
 interface Props {
   pokemon: PokemonDetail;
@@ -144,7 +157,7 @@ export function PokemonDetailView({ pokemon }: Props) {
             </p>
           )}
 
-          {/* Physical stats */}
+          {/* Physical stats + breeding */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-[#1a1a2e] rounded-xl p-3 border border-[#2a2a4e]">
               <p className="text-xs text-slate-500 mb-1">Altura</p>
@@ -153,6 +166,16 @@ export function PokemonDetailView({ pokemon }: Props) {
             <div className="bg-[#1a1a2e] rounded-xl p-3 border border-[#2a2a4e]">
               <p className="text-xs text-slate-500 mb-1">Peso</p>
               <p className="text-sm font-semibold text-white">{formatWeight(pokemon.weight)}</p>
+            </div>
+            <div className="bg-[#1a1a2e] rounded-xl p-3 border border-[#2a2a4e]">
+              <p className="text-xs text-slate-500 mb-1">Grupos huevo</p>
+              <p className="text-sm font-semibold text-white">
+                {pokemon.species.eggGroups.length > 0 ? pokemon.species.eggGroups.join(', ') : '—'}
+              </p>
+            </div>
+            <div className="bg-[#1a1a2e] rounded-xl p-3 border border-[#2a2a4e]">
+              <p className="text-xs text-slate-500 mb-1">Sexo</p>
+              <p className="text-sm font-semibold text-white">{formatGender(pokemon.species.genderRate)}</p>
             </div>
           </div>
 
@@ -241,6 +264,9 @@ export function PokemonDetailView({ pokemon }: Props) {
           </div>
         )
       )}
+
+      {/* ─── Type matchups (weaknesses / resistances) ─────────────────────── */}
+      <TypeMatchups types={pokemon.types} />
 
       {/* ─── Sprite gallery ───────────────────────────────────────────────── */}
       {hasSpriteGallery && (

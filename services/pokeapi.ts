@@ -619,6 +619,24 @@ export async function fetchPokemonByType(
   };
 }
 
+const EGG_GROUP_ES: Record<string, string> = {
+  monster: 'Monstruo',
+  water1: 'Agua 1',
+  water2: 'Agua 2',
+  water3: 'Agua 3',
+  bug: 'Bicho',
+  flying: 'Volador',
+  ground: 'Campo',
+  fairy: 'Hada',
+  plant: 'Planta',
+  humanshape: 'Humanoide',
+  mineral: 'Mineral',
+  indeterminate: 'Amorfo',
+  ditto: 'Ditto',
+  dragon: 'Dragón',
+  'no-eggs': 'Desconocido',
+};
+
 async function fetchSpeciesAndChain(
   raw: RawPokemon,
 ): Promise<{ species: SpeciesInfo; evolutionChain: EvolutionNode | null; pokedexNames: string[] }> {
@@ -637,6 +655,8 @@ async function fetchSpeciesAndChain(
         isBaby: speciesData.is_baby,
         color: speciesData.color.name,
         generation: speciesData.generation.name,
+        eggGroups: (speciesData.egg_groups ?? []).map(g => EGG_GROUP_ES[g.name] ?? g.name),
+        genderRate: speciesData.gender_rate ?? -1,
       }
     : {
         description: '',
@@ -646,6 +666,8 @@ async function fetchSpeciesAndChain(
         isBaby: false,
         color: 'unknown',
         generation: 'unknown',
+        eggGroups: [],
+        genderRate: -1,
       };
 
   const pokedexNames = speciesData?.pokedex_numbers?.map(p => p.pokedex.name) ?? [];
