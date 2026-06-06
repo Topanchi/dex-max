@@ -122,6 +122,8 @@ export interface RawSpecies {
   color: { name: string };
   shape: { name: string } | null;
   generation: { name: string };
+  gender_rate: number;
+  egg_groups: Array<{ name: string; url: string }>;
   pokedex_numbers: Array<{ entry_number: number; pokedex: { name: string; url: string } }>;
 }
 
@@ -237,6 +239,10 @@ export interface SpeciesInfo {
   isBaby: boolean;
   color: string;
   generation: string;
+  /** Spanish egg group names, e.g. ["Monstruo", "Planta"]. */
+  eggGroups: string[];
+  /** PokéAPI gender_rate: -1 = genderless, else female ratio out of 8. */
+  genderRate: number;
 }
 
 export interface MoveInfo {
