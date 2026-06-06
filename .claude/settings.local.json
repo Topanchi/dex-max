@@ -50,7 +50,8 @@
       "Bash(mv -f _hoenn.png hoenn.png)",
       "Bash(mv -f _sinnoh.png sinnoh.png)",
       "Bash(mv -f _unova.png unova.png)",
-      "Bash(mv -f _kalos.png kalos.png)"
+      "Bash(mv -f _kalos.png kalos.png)",
+      "Bash(npx next *)"
     ]
   }
 }
