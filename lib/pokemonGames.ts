@@ -57,6 +57,8 @@ export const GAME_CATALOG: Record<string, GameMeta> = {
   // Gen IX
   scarlet:           { title: 'Scarlet / Violet',                 titleEs: 'Escarlata / Violeta',           year: 2022, generation: 9,  region: 'Paldea',  image: '/games/scarlet-violet.png' },
   violet:            { title: 'Scarlet / Violet',                 titleEs: 'Escarlata / Violeta',           year: 2022, generation: 9,  region: 'Paldea',  image: '/games/scarlet-violet.png' },
+  'the-teal-mask':   { title: 'Scarlet / Violet – The Teal Mask', titleEs: 'Escarlata/Violeta – La Máscara Turquesa', year: 2023, generation: 9, region: 'Kitakami', image: '/games/the-teal-mask.png' },
+  'the-indigo-disk': { title: 'Scarlet / Violet – The Indigo Disk', titleEs: 'Escarlata/Violeta – El Disco Índigo', year: 2023, generation: 9, region: 'Blueberry', image: '/games/the-indigo-disk.png' },
   // Gen X
   'legends-za':      { title: 'Legends: Z-A',                     titleEs: 'Leyendas: Z-A',                 year: 2025, generation: 10, region: 'Kalos',   image: '/games/legends-za.png' },
 };
