@@ -211,7 +211,9 @@ function parseTable(html: string): AvailabilityRow[] {
   }
 
   // Drop the donated-out base rows and strip the transient flag.
-  return out.filter(r => !r.drop).map(({ drop: _drop, ...r }) => r);
+  return out
+    .filter(r => !r.drop)
+    .map(r => ({ gen: r.gen, edition: r.edition, titlesEs: r.titlesEs, color: r.color, loc: r.loc }));
 }
 
 export async function GET(
