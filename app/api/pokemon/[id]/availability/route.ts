@@ -55,6 +55,30 @@ function normalizeTitle(t: string): string {
     .trim();
 }
 
+// DLC locations are folded into the base-game rows with a marker icon; we pull
+// them into their own rows, inserted right after the base game(s) of that gen.
+const DLCS = [
+  { id: 'ioa',    marker: 'Solo en el DLC La isla de la armadura',  edition: 'Isla de la Armadura', after: ['Espada', 'Escudo'],     gen: 8, color: '#22c55e' },
+  { id: 'ct',     marker: 'Solo en el DLC Las nieves de la corona', edition: 'La Corona Nívea',      after: ['Espada', 'Escudo'],     gen: 8, color: '#38bdf8' },
+  { id: 'teal',   marker: 'Solo en el DLC La m[aá]scara turquesa',  edition: 'La Máscara Turquesa', after: ['Escarlata', 'Púrpura'], gen: 9, color: '#3fae93' },
+  { id: 'indigo', marker: 'Solo en el DLC El disco [ií]ndigo',      edition: 'El Disco Índigo',      after: ['Escarlata', 'Púrpura'], gen: 9, color: '#4f46e5' },
+];
+
+// Cleans a decoded localización line of artifacts left by removing locations.
+function cleanLine(html: string): string {
+  return decode(html)
+    .replace(/\s*,(\s*,)+/g, ',')        // collapse repeated commas
+    .replace(/:\s*,\s*/g, ': ')          // "Método: , X" → "Método: X"
+    .replace(/,?\s*y\s*([.;])/g, '$1')   // ", y ." → "."
+    .replace(/,\s*([.;])/g, '$1')        // ", ." → "."
+    .replace(/;\s*\./g, '.')             // "; ." → "."
+    .replace(/\s*;\s*$/g, '.')           // trailing ";" → "."
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+const isEmptyMethodLine = (l: string) => !l || /^[^:]+:\s*\.?$/.test(l);
+
 function parseTable(html: string): AvailabilityRow[] {
   const start = html.indexOf('<table class="localizacion');
   if (start === -1) return [];
@@ -63,11 +87,10 @@ function parseTable(html: string): AvailabilityRow[] {
   const rows = table.split(/<tr[ >]/).slice(1);
 
   let currentGen = 0;
-  const out: AvailabilityRow[] = [];
-  // SV DLC locations are folded into the Escarlata/Púrpura rows with a marker
-  // icon; we pull them out into their own rows.
-  const tealAll = new Set<string>();
-  const indigoAll = new Set<string>();
+  const out: (AvailabilityRow & { drop?: boolean })[] = [];
+  const dlcLocs: Record<string, Set<string>> = {};   // locations from mixed lines
+  const dlcLines: Record<string, Set<string>> = {};  // whole lines that are fully DLC
+  for (const d of DLCS) { dlcLocs[d.id] = new Set(); dlcLines[d.id] = new Set(); }
 
   for (const r of rows) {
     if (/>Gen\.</.test(r)) continue; // header row
@@ -100,77 +123,95 @@ function parseTable(html: string): AvailabilityRow[] {
     const colorMatch = (edTh?.[1] ?? r).match(/background-color:\s*(#[0-9a-fA-F]{3,6})/);
     const color = colorMatch ? colorMatch[1] : '#64748b';
 
-    // Pull out DLC-only locations (each tagged with a small marker icon) and
-    // remove them from the base list.
-    let tdHtml = td[1];
-    const grabDlc = (markerSrc: string, bucket: Set<string>) => {
-      const re = new RegExp(
-        `<a href="\\/wiki\\/[^"]*"[^>]*>([^<]*)<\\/a>\\s*<span[^>]*>\\s*<a[^>]*title="${markerSrc}"[\\s\\S]*?<\\/span>`,
-        'g',
-      );
-      tdHtml = tdHtml.replace(re, (_m, name) => {
-        const n = decode(name);
-        if (n) bucket.add(n);
-        return '';
-      });
-    };
-    grabDlc('Solo en el DLC La m[aá]scara turquesa', tealAll);
-    grabDlc('Solo en el DLC El disco [ií]ndigo', indigoAll);
+    // Classify each method line. A line is "DLC" if it has a DLC marker icon, or
+    // (for SV) describes the Blueberry Academy registration. DLC locations are
+    // pulled into the DLC rows; the base remainder stays. A base game row whose
+    // every line is DLC (no native data) is dropped — e.g. a Pokémon obtainable
+    // only via the DLC, so its base Espada/Escudo or Escarlata/Púrpura row goes.
+    const isSV = labels.includes('Escarlata') || labels.includes('Púrpura');
+    const baseLines: string[] = [];
+    let lineCount = 0;
+    let dlcLineCount = 0;
 
-    const loc = [...tdHtml.matchAll(/<li>([\s\S]*?)<\/li>/g)]
-      .map(m =>
-        decode(m[1])
-          .replace(/\s*,(\s*,)+/g, ',')        // collapse repeated commas
-          .replace(/:\s*,\s*/g, ': ')          // "Método: , X" → "Método: X"
-          .replace(/,?\s*y\s*([.;])/g, '$1')   // ", y ." → "."
-          .replace(/,\s*([.;])/g, '$1')        // ", ." → "."
-          .replace(/;\s*\./g, '.')             // "; ." → "."
-          .replace(/\s*;\s*$/g, '.')           // trailing ";" → "."
-          .replace(/\s{2,}/g, ' ')
-          .trim(),
-      )
-      .filter(l => l && !/^[^:]+:\s*\.?$/.test(l)); // drop empty "Método: ."
+    for (const m of td[1].matchAll(/<li>([\s\S]*?)<\/li>/g)) {
+      lineCount++;
+      let liHtml = m[1];
+      let isDlc = false;
 
-    if (labels.length === 0 && loc.length === 0) continue;
+      // Extract DLC-marked locations and strip them from the line.
+      for (const d of DLCS) {
+        const re = new RegExp(
+          `<a href="\\/wiki\\/[^"]*"[^>]*>([^<]+)<\\/a>\\s*<span[^>]*>\\s*<a[^>]*title="${d.marker}"[\\s\\S]*?<\\/span>`,
+          'g',
+        );
+        let found = false;
+        let mm: RegExpExecArray | null;
+        while ((mm = re.exec(liHtml)) !== null) { const n = decode(mm[1]); if (n) dlcLocs[d.id].add(n); found = true; }
+        if (found) { isDlc = true; liHtml = liHtml.replace(re, ''); }
+      }
+
+      if (!isDlc && isSV && /Sala del Club de la Liga|aclimatar/i.test(liHtml)) {
+        // Blueberry Academy registration → Indigo Disk content.
+        isDlc = true;
+        const bl = cleanLine(liHtml);
+        if (!isEmptyMethodLine(bl)) dlcLines['indigo'].add(bl);
+      } else {
+        const bl = cleanLine(liHtml);
+        if (!isEmptyMethodLine(bl)) baseLines.push(bl);
+      }
+      if (isDlc) dlcLineCount++;
+    }
+    const loc = baseLines;
+    const allDlc = lineCount > 0 && dlcLineCount === lineCount;
+
+    if (labels.length === 0 && loc.length === 0 && !allDlc) continue;
 
     const titlesEs = [...new Set(
       (titles.length ? titles : labels).map(normalizeTitle),
     )];
 
+    // A base game whose entire content was donated to a DLC (no native data)
+    // is flagged for removal — e.g. a Pokémon only obtainable via the DLC.
     out.push({
       gen: currentGen,
       edition: labels.join(' / '),
       titlesEs,
       color,
       loc,
+      drop: allDlc,
     });
   }
 
-  // Dedicated rows for the SV DLC, inserted right after the Escarlata/Púrpura
-  // rows they were extracted from.
-  const dlcRows: AvailabilityRow[] = [];
-  if (tealAll.size > 0) {
-    dlcRows.push({
-      gen: 9, edition: 'La Máscara Turquesa', titlesEs: [], color: '#3fae93',
-      loc: [`Salvaje: ${[...tealAll].join(', ')}.`],
-    });
+  // Build one row per DLC that gathered content (moved whole lines and/or
+  // extracted locations), grouped by the base game(s) they follow so they stay
+  // in order, and spliced in right after those base rows.
+  const groups = new Map<string, { after: string[]; rows: AvailabilityRow[] }>();
+  for (const d of DLCS) {
+    const lines = [...dlcLines[d.id]];
+    if (dlcLocs[d.id].size > 0) lines.push(`Salvaje: ${[...dlcLocs[d.id]].join(', ')}.`);
+    if (lines.length === 0) continue;
+
+    const baseRow = out.find(r => d.after.includes(r.edition));
+    const row: AvailabilityRow = {
+      gen: baseRow?.gen ?? d.gen,
+      edition: d.edition,
+      titlesEs: [],
+      color: d.color,
+      loc: lines,
+    };
+    const key = d.after.join('|');
+    if (!groups.has(key)) groups.set(key, { after: d.after, rows: [] });
+    groups.get(key)!.rows.push(row);
   }
-  if (indigoAll.size > 0) {
-    dlcRows.push({
-      gen: 9, edition: 'El Disco Índigo', titlesEs: [], color: '#4f46e5',
-      loc: [`Salvaje: ${[...indigoAll].join(', ')}.`],
-    });
-  }
-  if (dlcRows.length > 0) {
-    let after = -1;
-    out.forEach((row, i) => {
-      if (row.edition === 'Escarlata' || row.edition === 'Púrpura') after = i;
-    });
-    if (after >= 0) out.splice(after + 1, 0, ...dlcRows);
+  for (const { after, rows: dlcRows } of groups.values()) {
+    let idx = -1;
+    out.forEach((r, i) => { if (after.includes(r.edition)) idx = i; });
+    if (idx >= 0) out.splice(idx + 1, 0, ...dlcRows);
     else out.push(...dlcRows);
   }
 
-  return out;
+  // Drop the donated-out base rows and strip the transient flag.
+  return out.filter(r => !r.drop).map(({ drop: _drop, ...r }) => r);
 }
 
 export async function GET(
