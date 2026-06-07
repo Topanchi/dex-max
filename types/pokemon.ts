@@ -172,6 +172,8 @@ export interface PokemonAbility {
 export interface PokemonStat {
   name: string;
   value: number;
+  /** EV yield (effort) for this stat. */
+  effort: number;
 }
 
 export interface SpriteEntry {
@@ -214,6 +216,7 @@ export interface PokemonVariant {
   imageUrl: string | null;
   category: VariantCategory;
   isDefault: boolean;
+  stats: PokemonStat[];
 }
 
 export interface EvolutionTrigger {

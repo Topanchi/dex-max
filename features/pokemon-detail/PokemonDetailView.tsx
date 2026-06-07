@@ -12,6 +12,7 @@ import { TCGSection } from './TCGSection';
 import { TCGPocketSection } from './TCGPocketSection';
 import { MovesSection } from './MovesSection';
 import { TypeMatchups } from './TypeMatchups';
+import { CombatStats } from './CombatStats';
 import { GameAvailability } from './GameAvailability';
 import {
   normalizePokemonName,
@@ -58,6 +59,22 @@ export function PokemonDetailView({ pokemon }: Props) {
   const displayName = normalizePokemonName(pokemon.name);
   const number = formatPokedexNumber(pokemon.id);
   const gradient = getTypeGradient(pokemon.types);
+
+  // Combat stats: base form + variants, deduped by their base-stat signature
+  // (so cosmetic forms collapse and only stat-distinct forms get their table).
+  const combatForms = (() => {
+    const seen = new Set<string>();
+    return [
+      { name: displayName, stats: pokemon.stats },
+      ...pokemon.variants.map(v => ({ name: v.displayName, stats: v.stats })),
+    ].filter(f => {
+      if (f.stats.length === 0) return false;
+      const sig = f.stats.map(s => s.value).join(',');
+      if (seen.has(sig)) return false;
+      seen.add(sig);
+      return true;
+    });
+  })();
 
   // Group generation sprites by generation number (already sorted ascending)
   const spriteGroups = pokemon.sprites.generationSprites.reduce<
@@ -264,6 +281,9 @@ export function PokemonDetailView({ pokemon }: Props) {
           </div>
         )
       )}
+
+      {/* ─── Combat stats (base stats + per-level ranges, per form) ────────── */}
+      <CombatStats forms={combatForms} />
 
       {/* ─── Type matchups (weaknesses / resistances) ─────────────────────── */}
       <TypeMatchups types={pokemon.types} />
