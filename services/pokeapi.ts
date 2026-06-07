@@ -48,6 +48,7 @@ function mapStats(raw: RawPokemon['stats']): PokemonStat[] {
   return raw.map(s => ({
     name: STAT_NAMES[s.stat.name] ?? s.stat.name,
     value: s.base_stat,
+    effort: s.effort,
   }));
 }
 
@@ -715,6 +716,7 @@ async function fetchVariants(raw: RawPokemon): Promise<PokemonVariant[]> {
         imageUrl: extractImageUrl(variantRaw),
         category,
         isDefault: false,
+        stats: mapStats(variantRaw.stats),
       } satisfies PokemonVariant;
     }),
   );
