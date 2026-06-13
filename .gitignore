@@ -1,6 +1,10 @@
 # ─── Dependencias ────────────────────────────────────────────────────────────
 node_modules/
 
+# Este proyecto usa pnpm. No commitear lockfiles de otros gestores.
+package-lock.json
+yarn.lock
+
 # ─── Next.js ─────────────────────────────────────────────────────────────────
 .next/
 out/
@@ -50,3 +54,4 @@ next-env.d.ts
 # ─── Personal ──────────────────────────────────────────────────────────────────
 errores/
 .claude/
+.claude/settings.local.json

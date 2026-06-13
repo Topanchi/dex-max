@@ -20,11 +20,17 @@ Aplicación web completa para explorar todos los Pokémon con arte oficial, esta
 
 ## Instalación y ejecución
 
+Este proyecto usa **pnpm** como gestor de paquetes (versión fijada en `package.json` vía `packageManager`). [Corepack](https://nodejs.org/api/corepack.html) (incluido con Node ≥ 16.9) instala la versión correcta automáticamente.
+
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run build && npm start   # producción
+corepack enable              # activa pnpm con la versión fijada (una sola vez)
+
+pnpm install
+pnpm run dev                 # http://localhost:3000
+pnpm run build && pnpm start # producción
 ```
+
+> Si `corepack enable` falla por permisos, puedes usar `corepack pnpm <comando>` en su lugar.
 
 No requiere variables de entorno.
 
