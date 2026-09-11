@@ -14,7 +14,7 @@ Aplicación web completa para explorar todos los Pokémon con arte oficial, esta
 **APIs externas** (sin API key, públicas):
 - [PokéAPI v2](https://pokeapi.co/) — datos de Pokémon (tipos, estadísticas, evoluciones, sprites)
 - [Pokémon TCG API v2](https://api.pokemontcg.io/v2) — cartas TCG tradicional
-- [pokemon-tcg-pocket-cards](https://github.com/chase-manning/pokemon-tcg-pocket-cards) — datos de TCG Pocket
+- [pokemon-tcg-pocket-cards](https://github.com/PocketDecks/pokemon-tcg-pocket-cards) — datos de TCG Pocket
 
 ---
 
@@ -65,7 +65,7 @@ No requiere variables de entorno.
   - Matching robusto: acepta sufijos especiales (☆ Star, ◇ Prism, ex, GX, V, VMAX…) sin falsos positivos (Mew no captura Mewtwo)
   - Ordenadas por fecha de set descendente (más recientes primero)
   - Modal con imagen ampliada, rareza, PS, tipos TCG e ilustrador
-- **TCG Pocket**: [chase-manning/pokemon-tcg-pocket-cards](https://github.com/chase-manning/pokemon-tcg-pocket-cards) — datos completos de la app móvil
+- **TCG Pocket**: [PocketDecks/pokemon-tcg-pocket-cards](https://github.com/PocketDecks/pokemon-tcg-pocket-cards) — datos completos de la app móvil
   - Cartas de todas las expansiones disponibles en TCG Pocket
   - Datos extraídos de Limitless TCG
 
@@ -112,7 +112,7 @@ components/ui/
 services/
   pokeapi.ts                     # Integración PokéAPI: fetchers, mappers, caché 24h
   tcgdex.ts                      # Integración Pokémon TCG API v2: paginación completa, matching
-  tcgpocket.ts                   # Integración TCG Pocket: datos de GitHub (chase-manning)
+  tcgpocket.ts                   # Integración TCG Pocket: datos de GitHub (PocketDecks)
 
 lib/
   fetcher.ts                     # fetch wrapper con revalidate y manejo de errores

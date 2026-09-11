@@ -1,17 +1,21 @@
 /**
  * TCG Pocket cards service — usa el repositorio público:
- * https://github.com/chase-manning/pokemon-tcg-pocket-cards
+ * https://github.com/PocketDecks/pokemon-tcg-pocket-cards
+ *
+ * El repo reubicó sus datos: los antiguos v4.json / expansions.json de la raíz
+ * pasaron a data/v4/cards.min.json y data/v4/expansions.min.json (esquema v4
+ * "legacy", idéntico al que consume este servicio).
  *
  * Estrategia:
- *   1. Carga v4.json (todas las cartas, URLs de imagen directas, cacheado 24 h)
- *   2. Carga expansions.json para obtener los nombres de los sets
+ *   1. Carga data/v4/cards.min.json (todas las cartas, URLs de imagen directas, cacheado 24 h)
+ *   2. Carga data/v4/expansions.min.json para obtener los nombres de los sets
  *   3. Filtra las cartas por nombre con el guard anti-Mewtwo
  */
 
 import { fetcherSafe } from '@/lib/fetcher';
 import type { TCGPocketCard } from '@/types/tcg';
 
-const RAW_BASE   = 'https://raw.githubusercontent.com/chase-manning/pokemon-tcg-pocket-cards/refs/heads/main';
+const RAW_BASE   = 'https://raw.githubusercontent.com/PocketDecks/pokemon-tcg-pocket-cards/refs/heads/main';
 const REVALIDATE = 86400; // 24 h
 
 // ─── Raw types ────────────────────────────────────────────────────────────────
@@ -71,8 +75,8 @@ function isNameMatch(cardName: string, searchName: string): boolean {
 
 export async function searchTCGPocketCards(pokemonName: string): Promise<TCGPocketCard[]> {
   const [cards, expansions] = await Promise.all([
-    fetcherSafe<RawCard[]>(`${RAW_BASE}/v4.json`,         { revalidate: REVALIDATE }),
-    fetcherSafe<RawExpansion[]>(`${RAW_BASE}/expansions.json`, { revalidate: REVALIDATE }),
+    fetcherSafe<RawCard[]>(`${RAW_BASE}/data/v4/cards.min.json`,         { revalidate: REVALIDATE }),
+    fetcherSafe<RawExpansion[]>(`${RAW_BASE}/data/v4/expansions.min.json`, { revalidate: REVALIDATE }),
   ]);
 
   if (!cards?.length || !expansions?.length) return [];
