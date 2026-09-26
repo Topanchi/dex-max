@@ -20,6 +20,10 @@ export async function GET(request: NextRequest) {
       { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },
     );
   } catch {
-    return NextResponse.json({ cards: [] });
+    // The upstream TCG API failed (rate-limit, timeout, etc.). Return an
+    // empty result WITHOUT the long cache header, so this doesn't get stuck
+    // looking like "this Pokémon has no cards" for up to an hour — the next
+    // request will retry against the upstream API instead of hitting cache.
+    return NextResponse.json({ cards: [] }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
