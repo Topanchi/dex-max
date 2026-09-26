@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Modal } from '@/components/ui/Modal';
 import { TCGCardSkeleton } from '@/components/ui/Skeleton';
 import { normalizeTCGSearchName } from '@/utils/normalize';
+import { getTCGGeneration } from '@/utils/tcgGeneration';
+import { GENERATIONS } from '@/features/pokedex/GenerationFilter';
 import type { TCGCard } from '@/types/tcg';
 
 interface CardItemProps {
@@ -12,15 +14,25 @@ interface CardItemProps {
   onClick: (card: TCGCard) => void;
 }
 
+const SET_TYPE_LABELS: Record<TCGCard['set']['type'], string> = {
+  MAIN:    'Set principal',
+  SPECIAL: 'Set especial',
+  PROMO:   'Promo',
+  OTHER:   'Otros',
+};
+
 function CardItem({ card, onClick }: CardItemProps) {
   const [imgError, setImgError] = useState(false);
+  const cardNumber = card.set.printedTotal
+    ? `${card.number}/${card.set.printedTotal}`
+    : `#${card.number}`;
 
   return (
     <button
       onClick={() => onClick(card)}
       className="group text-left rounded-xl bg-[#1a1a2e] border border-[#2a2a4e] p-2 hover:border-[#4a4a7e]
                  hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30"
-      aria-label={`Ver carta ${card.name} – ${card.set.name} #${card.number}`}
+      aria-label={`Ver carta ${card.name} – ${card.set.name} ${cardNumber}`}
     >
       {/* Card image */}
       <div className="relative aspect-[2.5/3.5] w-full rounded-lg overflow-hidden bg-[#2a2a4e] mb-2">
@@ -42,11 +54,20 @@ function CardItem({ card, onClick }: CardItemProps) {
       </div>
 
       <p className="text-xs font-semibold text-white truncate">{card.name}</p>
-      <p className="text-[10px] text-slate-500 truncate">{card.set.name}</p>
-      <p className="text-[10px] text-slate-600">
-        #{card.number}
-        {card.rarity && ` · ${card.rarity}`}
+      <p className="text-[10px] text-slate-500 truncate">
+        {card.set.name}
+        {card.set.code && ` (${card.set.code})`}
       </p>
+      <p className="text-[10px] text-slate-600 truncate">
+        {cardNumber}
+        {card.variant && ` · ${card.variant}`}
+      </p>
+      {card.set.type !== 'MAIN' && (
+        <span className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-semibold
+                          bg-white/10 text-slate-400">
+          {SET_TYPE_LABELS[card.set.type]}
+        </span>
+      )}
     </button>
   );
 }
@@ -57,6 +78,9 @@ interface CardModalContentProps {
 
 function CardModalContent({ card }: CardModalContentProps) {
   const [imgError, setImgError] = useState(false);
+  const cardNumber = card.set.printedTotal
+    ? `${card.number}/${card.set.printedTotal}`
+    : `#${card.number}`;
 
   return (
     <div className="p-6 flex flex-col sm:flex-row gap-6">
@@ -85,40 +109,63 @@ function CardModalContent({ card }: CardModalContentProps) {
       <div className="flex-1 space-y-3">
         <div>
           <h3 className="text-xl font-bold text-white">{card.name}</h3>
-          <p className="text-sm text-slate-400">{card.set.name} · #{card.number}</p>
+          <p className="text-sm text-slate-400">
+            {card.set.name}
+            {card.set.code && ` (${card.set.code})`} · {cardNumber}
+          </p>
         </div>
 
         <dl className="space-y-2 text-sm">
+          <div className="flex gap-2">
+            <dt className="text-slate-500 w-28 shrink-0">Era TCG</dt>
+            <dd className="text-white">{card.era.name}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="text-slate-500 w-28 shrink-0">Tipo de set</dt>
+            <dd className="text-white">{SET_TYPE_LABELS[card.set.type]}</dd>
+          </div>
           {card.rarity && (
             <div className="flex gap-2">
-              <dt className="text-slate-500 w-24 shrink-0">Rareza</dt>
+              <dt className="text-slate-500 w-28 shrink-0">Rareza</dt>
               <dd className="text-white">{card.rarity}</dd>
             </div>
           )}
+          {card.variant && (
+            <div className="flex gap-2">
+              <dt className="text-slate-500 w-28 shrink-0">Variante</dt>
+              <dd className="text-white">{card.variant}</dd>
+            </div>
+          )}
+          {card.availableVariants.length > 0 && (
+            <div className="flex gap-2">
+              <dt className="text-slate-500 w-28 shrink-0">Impresiones</dt>
+              <dd className="text-white">{card.availableVariants.join(', ')}</dd>
+            </div>
+          )}
           <div className="flex gap-2">
-            <dt className="text-slate-500 w-24 shrink-0">Categoría</dt>
+            <dt className="text-slate-500 w-28 shrink-0">Categoría</dt>
             <dd className="text-white capitalize">{card.category}</dd>
           </div>
           {card.hp && (
             <div className="flex gap-2">
-              <dt className="text-slate-500 w-24 shrink-0">PS</dt>
+              <dt className="text-slate-500 w-28 shrink-0">PS</dt>
               <dd className="text-white">{card.hp}</dd>
             </div>
           )}
           {card.types && card.types.length > 0 && (
             <div className="flex gap-2">
-              <dt className="text-slate-500 w-24 shrink-0">Tipos (TCG)</dt>
+              <dt className="text-slate-500 w-28 shrink-0">Tipos (TCG)</dt>
               <dd className="text-white capitalize">{card.types.join(', ')}</dd>
             </div>
           )}
           {card.illustrator && (
             <div className="flex gap-2">
-              <dt className="text-slate-500 w-24 shrink-0">Ilustrador</dt>
+              <dt className="text-slate-500 w-28 shrink-0">Ilustrador</dt>
               <dd className="text-white">{card.illustrator}</dd>
             </div>
           )}
           <div className="flex gap-2">
-            <dt className="text-slate-500 w-24 shrink-0">Set ID</dt>
+            <dt className="text-slate-500 w-28 shrink-0">Set ID</dt>
             <dd className="text-slate-400 font-mono text-xs">{card.set.id}</dd>
           </div>
         </dl>
@@ -136,6 +183,16 @@ export function TCGSection({ pokemonName }: TCGSectionProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedCard, setSelectedCard] = useState<TCGCard | null>(null);
+
+  const groupedByGeneration = useMemo(() => {
+    const groups = new Map<number, TCGCard[]>();
+    for (const card of cards) {
+      const gen = getTCGGeneration(card.set.series, card.set.releaseDate);
+      if (!groups.has(gen)) groups.set(gen, []);
+      groups.get(gen)!.push(card);
+    }
+    return [...groups.entries()].sort((a, b) => a[0] - b[0]);
+  }, [cards]);
 
   useEffect(() => {
     const searchName = normalizeTCGSearchName(pokemonName);
@@ -179,13 +236,31 @@ export function TCGSection({ pokemonName }: TCGSectionProps) {
 
       {!loading && cards.length > 0 && (
         <>
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-slate-500 mb-4">
             {cards.length} carta{cards.length !== 1 ? 's' : ''} · Fuente: Pokémon TCG API
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-9 gap-3">
-            {cards.map(card => (
-              <CardItem key={card.id} card={card} onClick={setSelectedCard} />
-            ))}
+          <div className="space-y-6">
+            {groupedByGeneration.map(([genId, genCards]) => {
+              const gen = GENERATIONS.find(g => g.id === genId);
+              return (
+                <div key={genId}>
+                  <h3 className="text-sm font-bold mb-3 flex items-baseline gap-2">
+                    <span style={{ color: gen?.color }}>
+                      Generación {gen?.roman ?? genId}
+                    </span>
+                    {gen && <span className="text-xs font-normal text-slate-500">{gen.region}</span>}
+                    <span className="text-xs font-normal text-slate-600">
+                      ({genCards.length})
+                    </span>
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-9 gap-3">
+                    {genCards.map(card => (
+                      <CardItem key={card.id} card={card} onClick={setSelectedCard} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </>
       )}

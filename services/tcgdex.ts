@@ -10,11 +10,13 @@
  *   - No requiere API key (1 000 req/día en modo anónimo).
  */
 
-import { fetcherSafe } from '@/lib/fetcher';
+import { fetcher, fetcherSafe } from '@/lib/fetcher';
+import { getTCGEra, getTCGSetType, getTCGVariant, getAvailableVariants } from '@/utils/tcgClassification';
 import type { TCGCard } from '@/types/tcg';
 
 const BASE = 'https://api.pokemontcg.io/v2';
 const REVALIDATE = 86400; // 24 h
+const SET_CODES_REVALIDATE = 604800; // 7 d — los códigos de set no cambian
 
 // ─── Raw Pokémon TCG API types ────────────────────────────────────────────────
 
@@ -28,6 +30,11 @@ interface PTCGSet {
   name: string;
   series: string;
   releaseDate: string;
+  printedTotal?: number;
+}
+
+interface PTCGTcgplayer {
+  prices?: Record<string, unknown>;
 }
 
 interface PTCGCard {
@@ -42,6 +49,7 @@ interface PTCGCard {
   images: PTCGCardImages;
   set: PTCGSet;
   artist?: string;
+  tcgplayer?: PTCGTcgplayer;
 }
 
 interface PTCGResponse {
@@ -50,6 +58,15 @@ interface PTCGResponse {
   pageSize: number;
   count: number;
   totalCount: number;
+}
+
+interface PTCGSetSummary {
+  id: string;
+  ptcgoCode?: string;
+}
+
+interface PTCGSetsResponse {
+  data: PTCGSetSummary[];
 }
 
 // ─── Name normalization ───────────────────────────────────────────────────────
@@ -127,23 +144,58 @@ function isNameMatch(cardName: string, searchName: string): boolean {
   return nextChar !== undefined && !/[a-záéíóúüñ]/i.test(nextChar);
 }
 
+// ─── Códigos de set (ptcgoCode) ───────────────────────────────────────────────
+
+/**
+ * El endpoint /cards no incluye `ptcgoCode` en el `set` embebido de cada
+ * carta, así que se resuelve aparte con una única llamada a /sets (barata y
+ * cacheada 7 días, ya que estos códigos no cambian una vez asignados).
+ */
+let setCodesPromise: Promise<Record<string, string>> | null = null;
+
+function fetchSetCodes(): Promise<Record<string, string>> {
+  if (!setCodesPromise) {
+    setCodesPromise = fetcherSafe<PTCGSetsResponse>(
+      `${BASE}/sets?select=id,ptcgoCode`,
+      { revalidate: SET_CODES_REVALIDATE },
+    ).then(data => {
+      const map: Record<string, string> = {};
+      for (const set of data?.data ?? []) {
+        if (set.ptcgoCode) map[set.id] = set.ptcgoCode;
+      }
+      return map;
+    });
+  }
+  return setCodesPromise;
+}
+
 // ─── Mapper ──────────────────────────────────────────────────────────────────
 
-function mapCard(raw: PTCGCard): TCGCard {
+function mapCard(raw: PTCGCard, setCodes: Record<string, string>): TCGCard {
+  const availableVariants = getAvailableVariants(Object.keys(raw.tcgplayer?.prices ?? {}));
+
   return {
-    id:        raw.id,
-    name:      raw.name,
-    number:    raw.number,
-    imageUrl:  raw.images.large,
-    rarity:    raw.rarity ?? null,
-    category:  raw.supertype,
+    id:                raw.id,
+    name:              raw.name,
+    number:            raw.number,
+    imageUrl:          raw.images.large,
+    rarity:            raw.rarity ?? null,
+    variant:           getTCGVariant(raw.rarity, raw.set.name, raw.subtypes, availableVariants),
+    availableVariants,
+    category:          raw.supertype,
     set: {
-      id:   raw.set.id,
-      name: raw.set.name,
+      id:            raw.set.id,
+      name:          raw.set.name,
+      series:        raw.set.series,
+      releaseDate:   raw.set.releaseDate,
+      printedTotal:  raw.set.printedTotal ?? null,
+      code:          setCodes[raw.set.id] ?? null,
+      type:          getTCGSetType(raw.set.id, raw.set.name, raw.set.series),
     },
-    types:       raw.types,
-    hp:          raw.hp ? parseInt(raw.hp, 10) : undefined,
-    illustrator: raw.artist,
+    era:               getTCGEra(raw.set.series, raw.set.releaseDate),
+    types:             raw.types,
+    hp:                raw.hp ? parseInt(raw.hp, 10) : undefined,
+    illustrator:       raw.artist,
   };
 }
 
@@ -161,6 +213,11 @@ function sortCards(cards: PTCGCard[]): PTCGCard[] {
 /**
  * Fetches all pages for a given TCG API query term and returns raw cards that
  * pass the name-match guard against `matchName`.
+ *
+ * Uses the throwing `fetcher` (not `fetcherSafe`): a transient upstream
+ * failure (rate-limit, timeout, 5xx) must propagate as an error instead of
+ * silently resolving to an empty array, which would look identical to "this
+ * Pokémon genuinely has 0 TCG cards" and get cached as such by the route.
  */
 async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCGCard[]> {
   const query    = `name:"${queryTerm}*"`;
@@ -170,8 +227,8 @@ async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCG
 
   while (true) {
     const url = `${BASE}/cards?q=${encodeURIComponent(query)}&pageSize=${pageSize}&page=${page}`;
-    const data = await fetcherSafe<PTCGResponse>(url, { revalidate: REVALIDATE });
-    if (!data?.data?.length) break;
+    const data = await fetcher<PTCGResponse>(url, { revalidate: REVALIDATE });
+    if (!data.data.length) break;
 
     const matched = data.data.filter(c => isNameMatch(c.name, matchName));
     results.push(...matched);
@@ -189,16 +246,23 @@ async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCG
  * Returns all English TCG cards for the given Pokémon name, including
  * prefixed variants like "M Charizard-EX" and "Mega Charizard Y ex".
  * Results are deduplicated by card ID and sorted newest-set-first.
+ *
+ * Only a failure of the *base* query propagates (so the caller can avoid
+ * caching a transient failure as "this Pokémon has no cards"). The M/Mega
+ * variant queries are best-effort: most Pokémon don't have Mega forms, so a
+ * failure there just means those extra cards are missing this time, not
+ * that the whole search should be treated as broken.
  */
 export async function searchTCGCards(tcgName: string): Promise<TCGCard[]> {
   // Run all query variants in parallel:
   //   1. "Charizard*"      → base cards
   //   2. "M Charizard*"    → shorthand Mega EX cards (M Charizard-EX)
   //   3. "Mega Charizard*" → written-out Mega cards (Mega Charizard Y ex)
-  const [base, mVariant, megaVariant] = await Promise.all([
-    fetchAllPages(tcgName,          tcgName),
-    fetchAllPages(`M ${tcgName}`,   `M ${tcgName}`),
-    fetchAllPages(`Mega ${tcgName}`, `Mega ${tcgName}`),
+  const [base, mVariant, megaVariant, setCodes] = await Promise.all([
+    fetchAllPages(tcgName, tcgName),
+    fetchAllPages(`M ${tcgName}`,    `M ${tcgName}`).catch(() => [] as PTCGCard[]),
+    fetchAllPages(`Mega ${tcgName}`, `Mega ${tcgName}`).catch(() => [] as PTCGCard[]),
+    fetchSetCodes(),
   ]);
 
   // Deduplicate by card ID (some sets may overlap between queries)
@@ -211,5 +275,5 @@ export async function searchTCGCards(tcgName: string): Promise<TCGCard[]> {
     }
   }
 
-  return sortCards(allCards).map(mapCard);
+  return sortCards(allCards).map(raw => mapCard(raw, setCodes));
 }

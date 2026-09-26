@@ -71,9 +71,26 @@ export interface TCGCard {
   number: string | number;
   imageUrl: string | null;
   rarity: string | null;
+  /** Variante "de catálogo" derivada de rareza + variantes de impresión (best-effort). */
+  variant: string | null;
+  /** Variantes de impresión detectadas (p. ej. "Normal", "Holo", "Reverse Holo"). */
+  availableVariants: string[];
   category: string;
   set: {
     id: string;
+    name: string;
+    series: string;
+    releaseDate: string;
+    /** Total de cartas "impresas" del set (denominador, p. ej. 165 en 006/165). */
+    printedTotal: number | null;
+    /** Código del set en Pokémon TCG Online/Live (p. ej. "MEW"). */
+    code: string | null;
+    /** MAIN (expansión numerada principal) · SPECIAL (set especial) · PROMO · OTHER. */
+    type: 'MAIN' | 'SPECIAL' | 'PROMO' | 'OTHER';
+  };
+  /** Era TCG oficial (Original/Wizards, Neo/e-Card, EX, ..., Mega Evolution). */
+  era: {
+    id: number;
     name: string;
   };
   types?: string[];
