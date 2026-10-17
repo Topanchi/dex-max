@@ -47,6 +47,25 @@ function getExpansionId(cardId: string): string {
 }
 
 /**
+ * Las promos usan un prefijo propio ("pa", "pb") que no aparece en
+ * expansions.min.json (allí solo existe un "promo" genérico).
+ */
+const PROMO_EXPANSION = /^p([a-z])$/;
+
+/** "a2b" → "A" | "b1" → "B" | "pa" (Promo-A) → "A" | "pb" → "B" */
+function getSeries(expansionId: string): string {
+  const promo = expansionId.match(PROMO_EXPANSION);
+  return (promo ? promo[1] : expansionId.charAt(0)).toUpperCase();
+}
+
+/** "pa" → "Promo-A"; el resto se resuelve con expansions.min.json */
+function getExpansionName(expansionId: string, setMap: Map<string, string>): string {
+  const promo = expansionId.match(PROMO_EXPANSION);
+  if (promo) return `Promo-${promo[1].toUpperCase()}`;
+  return setMap.get(expansionId) ?? expansionId;
+}
+
+/**
  * Acepta una carta si el nombre del Pokémon buscado aparece como palabra completa
  * en cualquier posición del nombre de la carta.
  *
@@ -82,6 +101,10 @@ export async function searchTCGPocketCards(pokemonName: string): Promise<TCGPock
   if (!cards?.length || !expansions?.length) return [];
 
   const setMap = new Map(expansions.map(e => [e.id, e.name]));
+  // expansions.min.json viene en orden de lanzamiento; las promos (que no
+  // figuran ahí) van al final de su serie.
+  const expansionOrder = new Map(expansions.map((e, i) => [e.id, i]));
+  const orderOf = (expansionId: string) => expansionOrder.get(expansionId) ?? Number.MAX_SAFE_INTEGER;
 
   return cards
     .filter(c => isNameMatch(c.name, pokemonName))
@@ -94,7 +117,8 @@ export async function searchTCGPocketCards(pokemonName: string): Promise<TCGPock
         localId,
         imageUrl:    c.image,
         rarity:      c.rarity   || null,
-        set:         { id: expansionId, name: setMap.get(expansionId) ?? expansionId },
+        set:         { id: expansionId, name: getExpansionName(expansionId, setMap) },
+        series:      getSeries(expansionId),
         pack:        c.pack     || null,
         type:        c.type     || null,
         hp:          c.health   ? parseInt(c.health, 10) : null,
@@ -102,5 +126,12 @@ export async function searchTCGPocketCards(pokemonName: string): Promise<TCGPock
         fullArt:     c.fullart  === 'Yes',
         isEx:        c.ex       === 'Yes',
       };
-    });
+    })
+    // Serie (A, B, …) → expansión en orden de lanzamiento → número de carta
+    .sort((a, b) =>
+      a.series.localeCompare(b.series) ||
+      orderOf(a.set.id) - orderOf(b.set.id) ||
+      a.set.id.localeCompare(b.set.id) ||
+      parseInt(a.localId, 10) - parseInt(b.localId, 10),
+    );
 }

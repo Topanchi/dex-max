@@ -134,6 +134,22 @@ function CardModalContent({ card }: { card: TCGPocketCard }) {
   );
 }
 
+// ─── Grouping ─────────────────────────────────────────────────────────────────
+
+/**
+ * Agrupa las cartas por serie (A, B, …) conservando el orden que ya trae la
+ * API (serie → expansión → número).
+ */
+function groupBySeries(cards: TCGPocketCard[]): [string, TCGPocketCard[]][] {
+  const groups = new Map<string, TCGPocketCard[]>();
+  for (const card of cards) {
+    const group = groups.get(card.series);
+    if (group) group.push(card);
+    else groups.set(card.series, [card]);
+  }
+  return [...groups.entries()];
+}
+
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 interface TCGPocketSectionProps {
@@ -190,9 +206,21 @@ export function TCGPocketSection({ pokemonName }: TCGPocketSectionProps) {
           <p className="text-xs text-slate-500 mb-3">
             {cards.length} carta{cards.length !== 1 ? 's' : ''} · Fuente: pokemon-tcg-pocket-cards
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-9 gap-3">
-            {cards.map(card => (
-              <CardItem key={card.id} card={card} onClick={setSelectedCard} />
+          <div className="space-y-6">
+            {groupBySeries(cards).map(([series, seriesCards]) => (
+              <div key={series}>
+                <h3 className="text-sm font-semibold text-slate-300 mb-3">
+                  Serie {series}
+                  <span className="ml-2 text-xs font-normal text-slate-500">
+                    {seriesCards.length} carta{seriesCards.length !== 1 ? 's' : ''}
+                  </span>
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-9 gap-3">
+                  {seriesCards.map(card => (
+                    <CardItem key={card.id} card={card} onClick={setSelectedCard} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </>

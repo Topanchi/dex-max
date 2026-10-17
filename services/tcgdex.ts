@@ -144,6 +144,28 @@ function isNameMatch(cardName: string, searchName: string): boolean {
   return nextChar !== undefined && !/[a-záéíóúüñ]/i.test(nextChar);
 }
 
+/**
+ * Returns true if the search name appears anywhere in the card name as a whole
+ * word (bounded by non-letter characters or the string edges). Covers cards
+ * whose name has a prefix before the Pokémon:
+ *   - "Lance's Charizard V", "Blaine's Charizard", "Dark Charizard",
+ *     "Shining Charizard", "Radiant Charizard", "Reshiram & Charizard-GX"
+ *   - "Mewtwo & Mew-GX" when searching "Mew" → match (second occurrence)
+ *   - "Mewtwo" when searching "Mew"           → reject
+ */
+function isNameContained(cardName: string, searchName: string): boolean {
+  const card   = cardName.toLowerCase();
+  const search = searchName.toLowerCase();
+  const isLetter = (ch: string | undefined) => ch !== undefined && /[a-záéíóúüñ]/i.test(ch);
+
+  let idx = card.indexOf(search);
+  while (idx !== -1) {
+    if (!isLetter(card[idx - 1]) && !isLetter(card[idx + search.length])) return true;
+    idx = card.indexOf(search, idx + 1);
+  }
+  return false;
+}
+
 // ─── Códigos de set (ptcgoCode) ───────────────────────────────────────────────
 
 /**
@@ -211,15 +233,18 @@ function sortCards(cards: PTCGCard[]): PTCGCard[] {
 // ─── Fetcher ─────────────────────────────────────────────────────────────────
 
 /**
- * Fetches all pages for a given TCG API query term and returns raw cards that
- * pass the name-match guard against `matchName`.
+ * Fetches all pages for a given TCG API query and returns raw cards whose name
+ * passes the `matches` guard.
  *
  * Uses the throwing `fetcher` (not `fetcherSafe`): a transient upstream
  * failure (rate-limit, timeout, 5xx) must propagate as an error instead of
  * silently resolving to an empty array, which would look identical to "this
  * Pokémon genuinely has 0 TCG cards" and get cached as such by the route.
  */
-async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCGCard[]> {
+async function fetchAllPages(
+  queryTerm: string,
+  matches: (card: PTCGCard) => boolean,
+): Promise<PTCGCard[]> {
   const query    = `name:"${queryTerm}*"`;
   const pageSize = 250; // API maximum
   const results: PTCGCard[] = [];
@@ -230,7 +255,7 @@ async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCG
     const data = await fetcher<PTCGResponse>(url, { revalidate: REVALIDATE });
     if (!data.data.length) break;
 
-    const matched = data.data.filter(c => isNameMatch(c.name, matchName));
+    const matched = data.data.filter(matches);
     results.push(...matched);
 
     if (results.length >= data.totalCount || data.data.length < pageSize) break;
@@ -254,14 +279,26 @@ async function fetchAllPages(queryTerm: string, matchName: string): Promise<PTCG
  * that the whole search should be treated as broken.
  */
 export async function searchTCGCards(tcgName: string): Promise<TCGCard[]> {
+  const startsWith = (term: string) => (card: PTCGCard) => isNameMatch(card.name, term);
+
+  // The upstream name search matches any word of the card name, so "Charizard*"
+  // already returns cards with a prefix (Lance's Charizard V, Dark Charizard,
+  // Shining Charizard, Radiant Charizard…). Those are kept only when they are
+  // Pokémon cards, so Trainer/Energy cards that merely mention the name in the
+  // middle don't sneak in; Trainer cards that *start* with it (e.g. "Charizard
+  // Spirit Link") keep matching as before.
+  const baseMatch = (card: PTCGCard) =>
+    isNameMatch(card.name, tcgName) ||
+    (card.supertype === 'Pokémon' && isNameContained(card.name, tcgName));
+
   // Run all query variants in parallel:
-  //   1. "Charizard*"      → base cards
+  //   1. "Charizard*"      → base cards (plus prefixed Pokémon cards)
   //   2. "M Charizard*"    → shorthand Mega EX cards (M Charizard-EX)
   //   3. "Mega Charizard*" → written-out Mega cards (Mega Charizard Y ex)
   const [base, mVariant, megaVariant, setCodes] = await Promise.all([
-    fetchAllPages(tcgName, tcgName),
-    fetchAllPages(`M ${tcgName}`,    `M ${tcgName}`).catch(() => [] as PTCGCard[]),
-    fetchAllPages(`Mega ${tcgName}`, `Mega ${tcgName}`).catch(() => [] as PTCGCard[]),
+    fetchAllPages(tcgName, baseMatch),
+    fetchAllPages(`M ${tcgName}`,    startsWith(`M ${tcgName}`)).catch(() => [] as PTCGCard[]),
+    fetchAllPages(`Mega ${tcgName}`, startsWith(`Mega ${tcgName}`)).catch(() => [] as PTCGCard[]),
     fetchSetCodes(),
   ]);
 
