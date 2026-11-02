@@ -57,7 +57,7 @@ export interface TCGPocketCard {
   imageUrl: string;
   rarity: string | null;
   set: { id: string; name: string };
-  /** Serie de TCG Pocket: "A" (a1…a4b, promo-A), "B" (b1…, promo-B), etc. */
+  /** Serie de TCG Pocket: "A" (a1…a4b, Promo-A), "B" (b1…b4b, Promo-B), "C" (c1…, Promo-C), etc. */
   series: string;
   pack: string | null;
   type: string | null;
